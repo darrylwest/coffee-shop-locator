@@ -1,6 +1,6 @@
 {
   "name": "coffee-shop-locator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "a simple coffee shop locator",
   "main": "app.js",
   "directories": {
@@ -36,5 +36,7 @@
     "jshint": "^2.9.4",
     "jshint-stylish": "^2.2.1",
     "mocha": "^3.2.0"
-  }
+  },
+  "port":3002,
+  "apikey": "01BCGE4TN75GJKR2ZS2PPGCZZH"
 }

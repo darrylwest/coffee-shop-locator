@@ -4,7 +4,7 @@
 // 2017.04.01
 'use strict';
 
-const BootStrap = require('./lib/BootStrap');
+const BootStrap = require('./src/BootStrap');
 const config = require('./package.json');
 
 const app = require('express')();
