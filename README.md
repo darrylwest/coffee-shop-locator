@@ -13,6 +13,14 @@
 
 ## Overview
 
+The coffee shop locator challenge project is implemented with nodejs version 6.9.1 using the following dependencies:
+
+* express 4.15.2 as the REST server
+* geolib 2.0.22 for location search
+* simple-node-logger 0.93.17 for application logging
+
+Test dependencies include mocha, chai
+
 ## Installation
 
 

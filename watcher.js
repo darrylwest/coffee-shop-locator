@@ -44,6 +44,6 @@ const changeHandler = function(event, filename) {
 };
 
 run();
-fs.watch( './lib', { recursive:false }, changeHandler );
+fs.watch( './src', { recursive:false }, changeHandler );
 fs.watch( './test', { recursive:false }, changeHandler );
 

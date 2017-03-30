@@ -1,6 +1,6 @@
 {
   "name": "coffee-shop-locator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "a simple coffee shop locator",
   "main": "app.js",
   "directories": {
@@ -26,10 +26,8 @@
   },
   "homepage": "https://github.com/darrylwest/coffee-shop-locator#readme",
   "dependencies": {
-    "csv-parse": "^1.2.0",
     "express": "^4.15.2",
     "geolib": "^2.0.22",
-    "lodash": "^4.17.4",
     "simple-node-logger": "^0.93.17"
   },
   "devDependencies": {
