@@ -8,9 +8,9 @@ const should = require('chai').should(),
     dash = require('lodash'),
     MockLogger = require('simple-node-logger').mocks.MockLogger,
     MockExpress = require('./MockExpress'),
-    Routers = require('../lib/Routers'),
-    Handlers = require('../lib/Handlers'),
-    ShopDao = require('../lib/ShopDao');
+    Routers = require('../src/Routers'),
+    Handlers = require('../src/Handlers'),
+    ShopDao = require('../src/ShopDao');
 
 describe('Routers', function() {
     'use strict';

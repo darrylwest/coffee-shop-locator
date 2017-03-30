@@ -6,7 +6,6 @@
  * @author darryl.west@raincitysoftware.com
  * @created 2017-04-01
  */
-const dash = require('lodash');
 const geolib = require('geolib');
 const ItemModel = require('./ItemModel');
 
@@ -145,7 +144,9 @@ const ShopDao = function(options) {
 
     this.initData = function() {
         if (!db) {
-            let items = options.data || require('../database/data.json');
+            // read in and parse csv file 
+            // datafn = '../database/locations.csv';
+            let items = [];
             db = items.map(item => {
                 const model = new ItemModel( item );
                 idmap.set(model.id, model);
@@ -155,8 +156,6 @@ const ShopDao = function(options) {
 
         return [ db, idmap ];
     };
-
-    
 
     // construction validation
     (function() {

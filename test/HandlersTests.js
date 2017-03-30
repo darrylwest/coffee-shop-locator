@@ -9,8 +9,8 @@ const should = require('chai').should(),
     MockLogger = require('simple-node-logger').mocks.MockLogger,
     MockExpress = require('./MockExpress'),
     TestGeoData = require('./TestGeoData'),
-    Handlers = require('../lib/Handlers'),
-    ShopDao = require('../lib/ShopDao');
+    Handlers = require('../src/Handlers'),
+    ShopDao = require('../src/ShopDao');
 
 describe('Handlers', function() {
     'use strict';

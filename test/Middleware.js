@@ -7,8 +7,8 @@
 const should = require('chai').should(),
     dash = require('lodash'),
     MockLogger = require('simple-node-logger').mocks.MockLogger,
-    Middleware = require('../lib/Middleware'),
-    ShopDao = require('../lib/ShopDao');
+    Middleware = require('../src/Middleware'),
+    ShopDao = require('../src/ShopDao');
 
 describe('Middleware', function() {
     'use strict';

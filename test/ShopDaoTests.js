@@ -9,7 +9,7 @@ const should = require('chai').should(),
     geolib = require('geolib'),
     MockLogger = require('simple-node-logger').mocks.MockLogger,
     TestGeoData = require('./TestGeoData'),
-    ShopDao = require('../lib/ShopDao');
+    ShopDao = require('../src/ShopDao');
 
 describe('ShopDao', function() {
     'use strict';

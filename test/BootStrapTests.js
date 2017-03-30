@@ -8,10 +8,10 @@ const should = require('chai').should(),
     MockLogger = require('simple-node-logger').mocks.MockLogger,
     MockExpress = require('./MockExpress'),
     SimpleLogger = require('simple-node-logger'),
-    BootStrap = require('../lib/BootStrap'),
-    ShopDao = require('../lib/ShopDao'),
-    Handlers = require('../lib/Handlers'),
-    Routers = require('../lib/Routers');
+    BootStrap = require('../src/BootStrap'),
+    ShopDao = require('../src/ShopDao'),
+    Handlers = require('../src/Handlers'),
+    Routers = require('../src/Routers');
 
 describe('BootStrap', function() {
     'use strict';
