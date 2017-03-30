@@ -25,6 +25,8 @@ make start
 
 ## API Use
 
+The coffee-shop-locator API requires an api key and session key.  These values are hard-coded for this exercise...
+
 ### End Points
 
 ## Tests
@@ -35,15 +37,40 @@ make start
 
 ## Implementation
 
-### CSV Parsers
+### Project layout
+
+* src folder for production source files
+* test folder for unit and integration tests, test fixtures, etc
+* app.js for main runner
+* package.json for npm packaging
+* Makefile to orchestrate tests and start the app
+* watcher script that runs during development to run the full set of unit tests on file save
+* docker container with start-up script
+* tools folder with ad-hoc / sandbox tests
+* a travis yaml file for CI testing
+
+### Test Driven Design
+
+Achieving 100% test coverage for nodejs projects (actually any javascript) is vital.  I love coding in es6 but it's still easy to let silly mistakes get through unless all of the code is exercised.  And using TDD for development insures that every line of code is tested.
+
+JSHint is used to augment unit tests and insure that the code is formatted in a consistent manner.  There is an associated .jshintrc with specific formatting rules.
+
+There are also a set of integration tests, really more like exercises against the running API.  I find this useful for front end to use as a template for their work.  A viable option is to use something like Postman with a set of scripts.
+  
+### Application Logging
+
+
+### CSV Parser
+
+I did some research into an off-the-shelf CSV parser for node but ended up just writing one.  Here is what I looked at.
 
 #### Node.js CSV-Parser
 
 * difficult to use
 * documentation and examples were not helpful
-* sandbax tests took too long to implement
+* sandbox tests took too long to implement
 
-#### CSVTOJSON
+#### CSV-to-JSON
 
 * converted correctly
 * event based as opposed to callback
@@ -51,7 +78,7 @@ make start
 
 #### Conclusion 
 
-For this project it is probably easier to create one from scratch.
+For this project it is probably easier to create one from scratch and just read lines and separate fields with simple comma split.
 
 ## Extensions & Enhancements
 
@@ -68,4 +95,4 @@ For this project it is probably easier to create one from scratch.
 
 Apache 2.0
 
-###### darryl.west | Version 2017-03-29
+###### darryl.west | Version 2017-04-01

@@ -1,5 +1,5 @@
 TESTFILES=test/*.js
-JSFILES=lib/*.js app.js
+JSFILES=src/*.js app.js
 JSHINT=node_modules/.bin/jshint
 MOCHA=node_modules/.bin/mocha
 
