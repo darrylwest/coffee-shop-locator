@@ -14,14 +14,23 @@ make start
 
 ## API Use
 
+### End Points
+
 ## Tests
 
 ### Unit
 
 ### Integration
 
-## Docker Containerization
+## Extensions & Enhancements
 
+### Database Integration
+
+### Docker Containerization
+
+### Mobile Integration
+
+### Swagger Definitions
 
 
 ###### darryl.west | Version 2017-03-29
