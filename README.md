@@ -25,7 +25,7 @@ Test dependencies include mocha, chai
 
 
 ```
-git clone <>
+git clone https://github.com/darrylwest/coffee-shop-locator.git
 npm install
 make test
 make start
