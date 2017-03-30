@@ -33,6 +33,26 @@ make start
 
 ### Integration
 
+## Implementation
+
+### CSV Parsers
+
+#### Node.js CSV-Parser
+
+* difficult to use
+* documentation and examples were not helpful
+* sandbax tests took too long to implement
+
+#### CSVTOJSON
+
+* converted correctly
+* event based as opposed to callback
+* had es6 examples
+
+#### Conclusion 
+
+For this project it is probably easier to create one from scratch.
+
 ## Extensions & Enhancements
 
 ### Database Integration
