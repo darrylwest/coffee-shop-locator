@@ -4,27 +4,27 @@
  * @author darryl.west@raincitysoftware.com
  * @created 2017-04-01
  */
+'use strict';
 
-const Routers = function(options) {
-    'use strict';
+const Routers = function(options = {}) {
 
-    const routers = this,
-        log = options.log,
-        handlers = options.handlers;
+    const routers = this;
+    const log = options.log;
+    const handlers = options.handlers;
+    const config = options.config || require('../package.json');
+    const route = options.route || '/coffeeshop';
 
     this.assignRoutes = function(app) {
         log.info('assign the routes to app...');
 
-        // TODO : replace with a default page 
         log.info('define the top level route /');
         app.get('/', (req, res) => {
-            res.send(`${options.name} | Version ${options.version} | ${options.description}`);
+            // TODO : replace with a default page 
+            res.send(`<html><head><title>shop locator</title></head><body><h3>${config.name} | Version ${config.version}</h3><hr/><h4>${config.description}</h4></body></html>\n`);
         });
 
-        app.get('/shop/v0/item/:id', handlers.findItemById);
-        app.get('/shop/v0/items/user/:id', handlers.queryByUserId);
-        app.get('/shop/v0/items/all/:sort/:order', handlers.queryAll);
-        app.get('/shop/v0/items/geo/:lat/:long', handlers.queryByGeo);
+        app.get(`${route}/:id`, handlers.findShopById);
+        // app.del(`${route}/:id`, handlers.deleteShopById);
     };
 
     // construction validation

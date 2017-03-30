@@ -14,7 +14,7 @@ const Middleware = function(options = {}) {
 
     // verify the correct api access key
     this.checkAPIKey = function(req, resp, next) {
-        const key = request.headers[ 'x-api-key' ];
+        const key = req.headers[ 'x-api-key' ];
         const isvalid = (key === apikey);
 
         if (isvalid) {
@@ -26,7 +26,7 @@ const Middleware = function(options = {}) {
     };
 
     this.shutdown = function(req, resp, next) {
-        if (request.method === 'POST' && request.path === '/shutdown' && request.ip.indexOf('127.0.0.1')) {
+        if (req.method === 'POST' && req.path === '/shutdown' && req.ip.indexOf('127.0.0.1')) {
             resp.set('Content-Type', 'text/plain');
             resp.send(new Buffer('shutting service down...'));
 

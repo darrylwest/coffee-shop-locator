@@ -8,7 +8,7 @@
 
 // payload wrapper constants
 const OK = 'ok';
-const FAILED = 'failed'
+const FAILED = 'failed';
 
 const Handlers = function(options = {}) {
     const handlers = this;
@@ -34,7 +34,7 @@ const Handlers = function(options = {}) {
     /**
      * find a list of shops ordered by the closest
      */
-    this.queryShopsByGeo = function(request, response) {
+    this.findNearestShop = function(request, response) {
         const lat = request.params.lat || request.query.lat;
         const long = request.params.long || request.query.long;
         const loc = [ lat, long ];
@@ -59,7 +59,7 @@ const Handlers = function(options = {}) {
             ts:Date.now(),
             version:'1.0',
             results:obj
-        }
+        };
 
         return wrapper;
     };
