@@ -1,0 +1,41 @@
+{
+  "name": "coffee-shop-locator",
+  "version": "1.0.0",
+  "description": "a simple coffee shop locator",
+  "main": "app.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/darrylwest/coffee-shop-locator.git"
+  },
+  "keywords": [
+    "coffee",
+    "starbucks",
+    "slurp",
+    "beans"
+  ],
+  "author": "darryl.west@raincitysoftware.com",
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/darrylwest/coffee-shop-locator/issues"
+  },
+  "homepage": "https://github.com/darrylwest/coffee-shop-locator#readme",
+  "dependencies": {
+    "express": "^4.15.2",
+    "geolib": "^2.0.22",
+    "lodash": "^4.17.4",
+    "simple-node-logger": "^0.93.17"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "express-mocks-http": "0.0.11",
+    "jshint": "^2.9.4",
+    "jshint-stylish": "^2.2.1",
+    "mocha": "^3.2.0"
+  }
+}
