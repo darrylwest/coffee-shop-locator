@@ -1,23 +1,25 @@
 /**
  * @class ShopDao - 
- *    - Queries return a list of shop items; find returns a single model.
+ *    - Find coffee shop; find returns a single model.
  *    - All methods return a promise (thenable)
  *
  * @author darryl.west@raincitysoftware.com
  * @created 2017-04-01
  */
+'use strict';
+
 const geolib = require('geolib');
 const ShopModel = require('./ShopModel');
+const fs = require('fs');
 
-const ShopDao = function(options) {
-    'use strict';
+const ShopDao = function(options = {}) {
 
-    const dao = this,
-        log = options.log;
+    const dao = this;
+    const log = options.log;
+    const datafile = options.datafile || './database/locations.csv';
 
     let db = null;
-    let idmap = new Map();
-    let methodHash = new Map();
+    let idmap = new Map(); // shop index by id
 
     this.findById = function(id) {
         return new Promise((resolve, reject) => {
@@ -53,17 +55,6 @@ const ShopDao = function(options) {
         });
     };
 
-    // return true if the item is within the specified kilos of the target
-    this.isDistanceWithin = function(kilos, target, itemloc) {
-        const targetGeo = dao.locToGeo(target);
-        const itemGeo = dao.locToGeo( itemloc );
-        const distance = geolib.getDistance(targetGeo, itemGeo) / 1000;
-
-        log.info(`target: ${JSON.stringify(targetGeo)} item: ${JSON.stringify(itemGeo)} distance: ${distance} max: ${kilos}`);
-
-        return distance < kilos;
-    };
-
     // takes a standard location [ lat, long ] and returns an object { latitude:n, longitude:m }
     this.locToGeo = function(loc) {
         const [ lat, long ] = loc;
@@ -73,17 +64,45 @@ const ShopDao = function(options) {
 
     this.initData = function() {
         if (!db) {
-            // read in and parse csv file 
-            // datafn = '../database/locations.csv';
-            let items = [];
-            db = items.map(item => {
-                const model = new ItemModel( item );
+            const shops = dao.parseCSVFile(datafile);
+
+            db = shops.map(shop => {
+                const model = new ShopModel( shop );
                 idmap.set(model.id, model);
                 return model;
             });
         }
 
         return [ db, idmap ];
+    };
+
+    // read and parse the data file ; return a list of shop models
+    this.parseCSVFile = function(file) {
+        log.info('read the database file: ', file);
+
+        let shops = [];
+        const buf = fs.readFileSync(file);
+        if (!buf) {
+            throw new Error(`cannot locate database file ${file}`);
+        }
+
+        const lines = buf.toString().split('\n');
+        shops = lines.map(line => {
+            const columns = line.split(',');
+            if (columns.length !== 5) {
+                throw new Error(`malformed location data: ${line}`);
+            }
+
+            const params = {};
+            [ 'id', 'name', 'address', 'lat', 'lng' ].forEach((key, i) => {
+                params[key] = columns[i].trim();
+            });
+            const model = new ShopModel(params);
+            // console.log(model);
+            return model;
+        });
+
+        return shops;
     };
 
     // construction validation
