@@ -2,7 +2,7 @@
  * @class TestGeoData - geo references for predictable search results
  *
  * @author darryl.west@raincitysoftware.com
- * @created 2016-12-07
+ * @created 2017-04-01
  */
 const geolib = require('geolib');
 

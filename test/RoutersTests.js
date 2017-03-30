@@ -2,7 +2,7 @@
  * @class RoutersTests
  *
  * @author darryl.west@raincitysoftware.com
- * @created 2016-12-06
+ * @created 2017-04-01
  */
 const should = require('chai').should(),
     dash = require('lodash'),

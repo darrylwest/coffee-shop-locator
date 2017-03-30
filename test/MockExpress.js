@@ -2,7 +2,7 @@
  * @MockExpress
  *
  * @author: darryl.west@roundpeg.com
- * @created: 8/11/14 10:43 AM
+ * @created 2017-04-01
  */
 const httpMocks = require('express-mocks-http' );
 
