@@ -31,11 +31,25 @@ make test
 make start
 ```
 
+This will start that application service running in the background.  Log statements are written to the logs folder and you check the nohup.out file to see what the log filename is.
+
+At this point you can run the integration tests to get a feeling for what the API will return. 
+
 ## API Use
 
 The coffee-shop-locator API requires an api key and session key.  These values are hard-coded for this exercise...
 
 ### End Points
+
+There are only two coffeeshop end points, the first to fetch, insert, update and delete using http methods GET, POST, PUT and DELETE.  The second endpoint is used to search for the closest coffee shop given a street address.
+
+Here is the specific routing:
+
+* get /coffeeshop/:id - searches the database and returns the located record, or a 404 not found error
+* post /coffeeshop/ - validate and insert a new coffee shop and returns the shop's id
+* put /coffeeshop/:id - updates a shop with new values and returns the updated model if found, validated and updated, else returns a 404 error
+* delete /coffeeshop/:id - finds and deletes a coffee shop and returns the id, else returns a 404
+* get /coffeeshop/nearest?address=<address> - finds and returns the nearest coffee shop 
 
 ## Tests
 
@@ -43,7 +57,11 @@ This application was developed in osx and tested inside AWS on EC2 running cento
 
 ### Unit
 
+There are unit tests for each public function in the application.  There are also "compiler" tests that compensate for javascript not compiling until run time.  The "compiler" tests guard against typos that would not be caught even at runtime until a method is actually invoked.
+
 ### Integration
+
+There are good news and bad news test/exercises for each endpoint.
 
 ## Implementation
 
@@ -68,6 +86,8 @@ JSHint is used to augment unit tests and insure that the code is formatted in a 
 There are also a set of integration tests, really more like exercises against the running API.  I find this useful for front end to use as a template for their work.  A viable option is to use something like Postman with a set of scripts.
   
 ### Application Logging
+
+_Why this is important..._
 
 
 ### CSV Parser

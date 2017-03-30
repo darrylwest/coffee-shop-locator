@@ -19,6 +19,9 @@ test:
 run:
 	node app.js
 
+start:
+	@( export NODE_DEV=production && nohup node app.js & )
+
 integration-tests:
 	@( ./integration-tests/findItemById.sh )
 	@( ./integration-tests/queryByUserId.sh )
