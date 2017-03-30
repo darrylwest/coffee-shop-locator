@@ -5,18 +5,49 @@
  * @created 2017-04-01
  */
 
-const Middleware = function(options) {
-    'use strict';
+'use strict';
+const Middleware = function(options = {}) {
+    const middleware = this;
+    const log = options.log;
 
-    const routers = this,
-        log = options.log;
+    const apikey = options.apikey;
 
-    // no middleware was implemented...
+    // verify the correct api access key
+    this.checkAPIKey = function(req, resp, next) {
+        const key = request.headers[ 'x-api-key' ];
+        const isvalid = (key === apikey);
+
+        if (isvalid) {
+            next();
+        } else {
+            log.warn('invalid api key:', key);
+            next();
+        }
+    };
+
+    this.shutdown = function(req, resp, next) {
+        if (request.method === 'POST' && request.path === '/shutdown' && request.ip.indexOf('127.0.0.1')) {
+            resp.set('Content-Type', 'text/plain');
+            resp.send(new Buffer('shutting service down...'));
+
+            log.warn('shutdown request, scheduling kill process for pid: ', process.pid);
+
+            process.setTimeout(() => {
+                console.log('>>> kill process:', process.pid);
+                process.kill( process.pid );
+            }, 250);
+        } else {
+            next();
+        }
+    };
 
     // construction validation
     (function() {
         if (!log) {
-            throw new Error('router must be constructed with a log object');
+            throw new Error('middleware must be constructed with a log object');
+        }
+        if (!apikey) {
+            throw new Error('middleware must be constructed with an API access key');
         }
     }());
 };

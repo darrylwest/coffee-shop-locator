@@ -16,13 +16,17 @@ describe('Middleware', function() {
     const createOptions = function() {
         const opts = {};
         opts.log = MockLogger.createLogger('Middleware');
+        opts.apikey = require('../package.json').apikey;
 
         return opts;
     };
 
     describe('#instance', function() {
         const middleware = new Middleware( createOptions() );
-        const methods = [];
+        const methods = [
+            'checkAPIKey',
+            'shutdown'
+        ];
 
         it('should create an instance of Middleware', function() {
             should.exist( middleware );

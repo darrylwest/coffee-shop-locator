@@ -7,7 +7,7 @@
  * @created 2017-04-01
  */
 const geolib = require('geolib');
-const ItemModel = require('./ItemModel');
+const ShopModel = require('./ShopModel');
 
 const ShopDao = function(options) {
     'use strict';
@@ -19,61 +19,6 @@ const ShopDao = function(options) {
     let idmap = new Map();
     let methodHash = new Map();
 
-    // define the private sorters...
-    function sortByCreatedAtAsc(a, b) {
-        return a.createdAt.getTime() - b.createdAt.getTime();
-    }
-
-    function sortByCreatedAtDesc(a, b) {
-        return b.createdAt.getTime() - a.createdAt.getTime();
-    }
-
-    function sortByPriceAsc(a, b) {
-        return a.price - b.price;
-    }
-
-    function sortByPriceDesc(a, b) {
-        return b.price - a.price;
-    }
-
-    this.assignSortOrder = function(sort, order) {
-        log.info(`assign the appropriate sort and order for ${sort}/${order}`);
-
-        let key = `${sort}/${order}`;
-        let sortFn = methodHash.get(key);
-
-        if (!sortFn) {
-            log.warn('query all has no sort by or order, will use default...');
-            if (sort === 'price') {
-                sortFn = sortByPriceAsc;
-            } else {
-                sortFn = sortByCreatedAtAsc;
-            }
-        }
-
-        log.info(`sort function assiged from ${key} => ${sortFn.name}`);
-
-        return sortFn;
-    };
-
-    this.queryAll = function(sortFn) {
-        if (typeof sortFn !== 'function') {
-            log.warn('assigning default sort...');
-            sortFn = dao.sortByCreatedAtAsc;
-        }
-        return new Promise((resolve, reject) => {
-            // TODO replace with sorter...
-            let list = db.sort(sortFn);
-
-            if (list) {
-                log.info(`query all, found ${list.length} items`);
-                return resolve(list);
-            } else {
-                return reject(new Error(`bad query`));
-            }
-        });
-    };
-
     this.findById = function(id) {
         return new Promise((resolve, reject) => {
             const item = idmap.get(id);
@@ -84,22 +29,6 @@ const ShopDao = function(options) {
                 const err = new Error(`model not found for id: ${id}`);
                 log.warn(err.message);
                 return reject(err);
-            }
-        });
-    };
-
-    // return a promise
-    this.queryByUserId = function(id, sortFn) {
-        return new Promise((resolve, reject) => {
-            const list = db.filter(item => {
-                return item.userId === id;
-            });
-
-            if (list) {
-                log.info(`query by user id ${id}, found ${list.length} items`);
-                return resolve(list);
-            } else {
-                return reject(new Error(`bad query for user id=${id}`));
             }
         });
     };
@@ -162,12 +91,6 @@ const ShopDao = function(options) {
         if (!log) {
             throw new Error('shop dao must be constructed with a log object');
         }
-
-        // load the method hash (this eliminates a big switch statement)
-        methodHash.set('created/asc', sortByCreatedAtAsc);
-        methodHash.set('created/desc', sortByCreatedAtDesc);
-        methodHash.set('price/asc', sortByPriceAsc);
-        methodHash.set('price/desc', sortByPriceDesc);
     }());
 };
 
