@@ -28,6 +28,9 @@ integration-tests:
 watch:
 	@( ./watcher.js )
 
+edit:
+	vi -O2 src/*.js test/*.js
+
 .PHONY:	npm
 .PHONY:	watch
 .PHONY:	test
