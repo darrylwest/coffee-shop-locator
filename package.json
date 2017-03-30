@@ -38,5 +38,6 @@
     "mocha": "^3.2.0"
   },
   "port":3002,
+  "logPath": "./logs",
   "apikey": "01BCGE4TN75GJKR2ZS2PPGCZZH"
 }

@@ -1,49 +1,40 @@
 /**
- * @class Handlers - connect API requests to data access
+ * @class Handlers - connect API requests to data access; query data and return the payload or error
  *
  * @author darryl.west@raincitysoftware.com
  * @created 2017-04-01
  */
-const dash = require('lodash');
+'use strict';
 
-const Handlers = function(options) {
-    'use strict';
+// payload wrapper constants
+const OK = 'ok';
+const FAILED = 'failed'
 
-    const handlers = this,
-        log = options.log,
-        dao = options.dao;
+const Handlers = function(options = {}) {
+    const handlers = this;
+    const log = options.log;
+    const dao = options.dao;
 
-    this.queryByUserId = function(request, response) {
+    /**
+     * locate the coffee shop with it's id
+     */
+    this.findShopById = function(request, response) {
         const id = request.params.id || request.query.id;
-        log.info(`query by user id=${id}`);
-        dao.queryByUserId(id).then(list => {
-            const payload = handlers.createPayload(list);
-            log.info(`return items for user ${id}, item count: ${list.length}`);
+        log.info('find shop by id: ', id);
+        dao.findById(id).then(item => {
+            const payload = handlers.createPayload(OK, item);
+            log.info('returning payload: ', payload);
             response.send(payload);
         }).catch(err => {
-            log.error( err );
-            // must be a machine error at this point...
-            response.sendStatus(500);
+            log.warn( err.message );
+            response.sendStatus(404);
         });
     };
 
-    this.queryAll = function(request, response) {
-        const sort = request.params.sort || request.query.sort;
-        const order = request.params.order || request.query.order;
-        log.info(`query all sorted by ${sort}`);
-        let sortFn = dao.assignSortOrder(sort, order);
-
-        dao.queryAll(sortFn).then(list => {
-            const payload = handlers.createPayload(list);
-            log.info(`return all rows, count: ${list.length}`);
-            response.send(payload);
-        }).catch(err => {
-            log.error(err);
-            response.sendStatus(500);
-        });
-    };
-
-    this.queryByGeo = function(request, response) {
+    /**
+     * find a list of shops ordered by the closest
+     */
+    this.queryShopsByGeo = function(request, response) {
         const lat = request.params.lat || request.query.lat;
         const long = request.params.long || request.query.long;
         const loc = [ lat, long ];
@@ -59,22 +50,18 @@ const Handlers = function(options) {
         });
     };
 
-    this.findItemById = function(request, response) {
-        const id = request.params.id || request.query.id;
-        log.info('find shop item by id: ', id);
-        dao.findById(id).then(item => {
-            const payload = handlers.createPayload(item);
-            log.info('returning payload: ', payload);
-            response.send(payload);
-        }).catch(err => {
-            log.warn( err.message );
-            response.sendStatus(404);
-        });
-    };
+    /**
+     * create a wrapper with status, timestamp, response version and the results
+     */
+    this.createPayload = function(status, obj) {
+        const wrapper = {
+            status:status,
+            ts:Date.now(),
+            version:'1.0',
+            results:obj
+        }
 
-    this.createPayload = function(obj) {
-        // TODO create a wrapper?  maybe for v1...
-        return obj;
+        return wrapper;
     };
 
     // construction validation

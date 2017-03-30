@@ -4,16 +4,16 @@
  * @author darryl.west@raincitysoftware.com
  * @created 2017-04-01
  */
+'use strict';
+
 const ShopDao = require('./ShopDao');
 const Handlers = require('./Handlers');
 const Routers = require('./Routers');
 const SimpleLogger = require('simple-node-logger');
 
-const BootStrap = function(options) {
-    'use strict';
-
-    const bootStrap = this,
-        app = options.app;
+const BootStrap = function(options = {}) {
+    const bootStrap = this;
+    const app = options.app;
 
     // these could be defined in some other location, e.g., test factory
     let logManager = options.logManager;
@@ -27,6 +27,7 @@ const BootStrap = function(options) {
     // configure the application
     this.configure = function() {
         if (!createLogger) {
+            // create a category logger to enable tracing statements by module name
             logManager = bootStrap.createLogManager();
             createLogger = logManager.createLogger;
         }
@@ -91,7 +92,7 @@ const BootStrap = function(options) {
 
             const opts = {};
             if (options.logPath) {
-                opts.logFilePath = `${options.logPath}/shop-api-${process.pid}.log`;
+                opts.logFilePath = `${options.logPath}/coffee-shop-api-${process.pid}.log`;
                 logManager.createFileAppender(opts);
                 console.log(`logging in ${opts.logFilePath}`);
             } else {
