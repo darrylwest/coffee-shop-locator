@@ -4,13 +4,12 @@
  * @author darryl.west@raincitysoftware.com
  * @created 2017-04-01
  */
-const should = require('chai').should(),
-    dash = require('lodash'),
-    MockLogger = require('simple-node-logger').mocks.MockLogger,
-    MockExpress = require('./MockExpress'),
-    Routers = require('../src/Routers'),
-    Handlers = require('../src/Handlers'),
-    ShopDao = require('../src/ShopDao');
+const should = require('chai').should();
+const MockLogger = require('simple-node-logger').mocks.MockLogger;
+const MockExpress = require('./MockExpress');
+const Routers = require('../src/Routers');
+const Handlers = require('../src/Handlers');
+const ShopDao = require('../src/ShopDao');
 
 describe('Routers', function() {
     'use strict';
@@ -36,7 +35,7 @@ describe('Routers', function() {
         });
 
         it('should have all known methods by size and type', function() {
-            dash.functions( routers ).length.should.equal( methods.length );
+            Object.keys( routers ).length.should.equal( methods.length );
             methods.forEach(method => {
                 // console.log(method);
                 routers[ method ].should.be.a( 'function' );

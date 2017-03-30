@@ -1,6 +1,6 @@
 {
   "name": "coffee-shop-locator",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A simple coffee shop locator to find the closest coffee shop based on geo location...",
   "main": "app.js",
   "directories": {

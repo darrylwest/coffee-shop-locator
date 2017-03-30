@@ -4,12 +4,11 @@
  * @author darryl.west@raincitysoftware.com
  * @created 2017-04-01
  */
-const should = require('chai').should(),
-    dash = require('lodash'),
-    geolib = require('geolib'),
-    MockLogger = require('simple-node-logger').mocks.MockLogger,
-    TestGeoData = require('./TestGeoData'),
-    ShopDao = require('../src/ShopDao');
+const should = require('chai').should();
+const geolib = require('geolib');
+const MockLogger = require('simple-node-logger').mocks.MockLogger;
+const TestGeoData = require('./TestGeoData');
+const ShopDao = require('../src/ShopDao');
 
 describe('ShopDao', function() {
     'use strict';
@@ -40,7 +39,7 @@ describe('ShopDao', function() {
         });
 
         it('should have all known methods by size and type', function() {
-            dash.functions( dao ).length.should.equal( methods.length );
+            Object.keys( dao ).length.should.equal( methods.length );
             methods.forEach(method => {
                 // console.log(method);
                 dao[ method ].should.be.a( 'function' );

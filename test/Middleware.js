@@ -4,11 +4,10 @@
  * @author darryl.west@raincitysoftware.com
  * @created 2017-04-01
  */
-const should = require('chai').should(),
-    dash = require('lodash'),
-    MockLogger = require('simple-node-logger').mocks.MockLogger,
-    Middleware = require('../src/Middleware'),
-    ShopDao = require('../src/ShopDao');
+const should = require('chai').should();
+const MockLogger = require('simple-node-logger').mocks.MockLogger;
+const Middleware = require('../src/Middleware');
+const ShopDao = require('../src/ShopDao');
 
 describe('Middleware', function() {
     'use strict';
@@ -34,7 +33,7 @@ describe('Middleware', function() {
         });
 
         it('should have all known methods by size and type', function() {
-            dash.functions( middleware ).length.should.equal( methods.length );
+            Object.keys( middleware ).length.should.equal( methods.length );
             methods.forEach(method => {
                 // console.log(method);
                 middleware[ method ].should.be.a( 'function' );

@@ -19,7 +19,7 @@ The coffee shop locator challenge project is implemented with nodejs version 6.9
 * geolib 2.0.22 for location search
 * simple-node-logger 0.93.17 for application logging
 
-Test dependencies include mocha, chai
+Test dependencies include mocha, chai, jshint, mock-express.
 
 ## Installation
 
@@ -38,6 +38,8 @@ The coffee-shop-locator API requires an api key and session key.  These values a
 ### End Points
 
 ## Tests
+
+This application was developed in osx and tested inside AWS on EC2 running centos7 and node 6.10.
 
 ### Unit
 
