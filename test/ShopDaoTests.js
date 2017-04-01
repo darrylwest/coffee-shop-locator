@@ -7,7 +7,6 @@
 const should = require('chai').should();
 const geolib = require('geolib');
 const MockLogger = require('simple-node-logger').mocks.MockLogger;
-const TestGeoData = require('./TestGeoData');
 const ShopDao = require('../src/ShopDao');
 const ShopModel = require('../src/ShopModel');
 
@@ -15,7 +14,6 @@ describe('ShopDao', function() {
     'use strict';
 
     const coffeeShops = require('./fixtures/shops.json');
-    const testGeoData = new TestGeoData();
 
     const createOptions = function() {
         const opts = {};
