@@ -20,6 +20,7 @@ const ShopDao = function(options = {}) {
 
     let db = null;
     let idmap = new Map(); // shop index by id
+    let nextId = 0;
 
     this.findById = function(id) {
         return new Promise((resolve, reject) => {
@@ -35,8 +36,36 @@ const ShopDao = function(options = {}) {
         });
     };
 
+    this.update = function(shop) {
+        // prepare the shop model for insert or update
+        const model = dao.prepareForUpdate(shop);
+
+        return new Promise((resolve, reject) => {
+            idmap.set(shop.id, shop);
+        });
+    };
+
+    // prepare the coffee shop model for insert/update by assigning id, date created/updated and version
+    this.prepareForUpdate = function(shop) {
+        if (!shop.id) {
+            shop.id = dao.createNextId();
+        }
+
+        if (!shop.dateCreated) {
+            shop.dateCreated = new Date();
+        }
+
+        shop.lastUpdated = new Date();
+        if (!shop.version) {
+            shop.version = 0;
+        } else {
+            shop.version++;
+        }
+
+        return shop;
+    };
+
     this.queryByGeo = function(loc) {
-        // hardcode 50 mile radius converted to km
         const maxkm = 50 * 1.609344;
 
         return new Promise((resolve, reject) => {
@@ -86,6 +115,7 @@ const ShopDao = function(options = {}) {
             throw new Error(`cannot locate database file ${file}`);
         }
 
+        let maxid = 0;
         const lines = buf.toString().split('\n');
         shops = lines.map(line => {
             const columns = line.split(',');
@@ -95,14 +125,34 @@ const ShopDao = function(options = {}) {
 
             const params = {};
             [ 'id', 'name', 'address', 'lat', 'lng' ].forEach((key, i) => {
-                params[key] = columns[i].trim();
+                if (key === 'id') {
+                    const id = parseInt(columns[i]);
+                    if (id > nextId) {
+                        nextId = id + 1;
+                    }
+
+                    params.id = id;
+                    params.dateCreated = params.lastUpdated = new Date();
+                    params.version = 0;
+                    log.info('create the new model with id: ', params.id);
+                } else {
+                    params[key] = columns[i].trim();
+                }
             });
+
             const model = new ShopModel(params);
-            // console.log(model);
+            log.info(model);
+
             return model;
         });
 
         return shops;
+    };
+
+    // return the next id
+    this.createNextId = function() {
+        nextId++;
+        return nextId;
     };
 
     // construction validation

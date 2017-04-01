@@ -4,14 +4,14 @@
  * @author darryl.west@raincitysoftware.com
  * @created 2017-04-01
  */
-const should = require('chai').should(),
-    MockLogger = require('simple-node-logger').mocks.MockLogger,
-    MockExpress = require('./MockExpress'),
-    SimpleLogger = require('simple-node-logger'),
-    BootStrap = require('../src/BootStrap'),
-    ShopDao = require('../src/ShopDao'),
-    Handlers = require('../src/Handlers'),
-    Routers = require('../src/Routers');
+const should = require('chai').should();
+const MockLogger = require('simple-node-logger').mocks.MockLogger;
+const MockExpress = require('./MockExpress');
+const SimpleLogger = require('simple-node-logger');
+const BootStrap = require('../src/BootStrap');
+const ShopDao = require('../src/ShopDao');
+const Handlers = require('../src/Handlers');
+const Routers = require('../src/Routers');
 
 describe('BootStrap', function() {
     'use strict';

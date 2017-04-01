@@ -8,8 +8,8 @@
 
 const ShopModel = function(params = {}) {
     this.id = params.id;
-    this.dateCreated = params.dateCreated || new Date();
-    this.lastUpdated = params.lastUpdated || new Date();
+    this.dateCreated = params.dateCreated;
+    this.lastUpdated = params.lastUpdated;
     this.version = params.version || 0;
 
     this.name = params.name;
