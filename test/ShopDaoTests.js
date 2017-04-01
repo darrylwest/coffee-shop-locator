@@ -9,10 +9,12 @@ const geolib = require('geolib');
 const MockLogger = require('simple-node-logger').mocks.MockLogger;
 const TestGeoData = require('./TestGeoData');
 const ShopDao = require('../src/ShopDao');
+const ShopModel = require('../src/ShopModel');
 
 describe('ShopDao', function() {
     'use strict';
 
+    const coffeeShops = require('./fixtures/shops.json');
     const testGeoData = new TestGeoData();
 
     const createOptions = function() {
@@ -29,6 +31,7 @@ describe('ShopDao', function() {
             'findById',
             'update',
             'prepareForUpdate',
+            'validate',
             'createNextId',
             'queryByGeo',
             'locToGeo',
@@ -141,6 +144,38 @@ describe('ShopDao', function() {
                 done();
             });
         });
+    });
+
+    describe('validate', function() {
+        const dao = new ShopDao(createOptions());
+
+        it('should validate a valid model', function() {
+            // known valid shop...
+            const shop = new ShopModel(coffeeShops[0]);
+            const errors = dao.validate(shop);
+            errors.length.should.equal(0);
+        });
+
+        it('should return errors for missing name, address, lat/lng', function() {
+            // known valid shop...
+            const shop = new ShopModel(coffeeShops[0]);
+            shop.name = null;
+            shop.address = null;
+            shop.lat = 0;
+            shop.lng = 0;
+
+            const errors = dao.validate(shop);
+            errors.length.should.equal(4);
+        });
+    });
+
+    describe('update', function() {
+        const dao = new ShopDao(createOptions());
+
+        it('should prepare a new model for insert');
+        it('should prepare an existing model for update');
+        it('should insert a new model');
+        it('should update an existing model');
     });
 
 });

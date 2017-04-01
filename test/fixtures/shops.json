@@ -1,0 +1,11 @@
+[
+    {
+        "id":39,
+        "version":0,
+        "name":"Coffee Cultures",
+        "address":"1301 Mission St", 
+        "lat":37.77612762238859, 
+        "lng":-122.41465262422996,
+        "status":"active"
+    }
+]

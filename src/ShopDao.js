@@ -37,6 +37,29 @@ const ShopDao = function(options = {}) {
         });
     };
 
+    // validate the model and return any detected errors
+    this.validate = function(shop) {
+        let errors = [];
+
+        if (!shop.name || typeof(shop.name) !== 'string') {
+            errors.push('Coffee Shop name is not valid');
+        }
+
+        if (!shop.address || typeof(shop.address) !== 'string') {
+            errors.push('address is not valid');
+        }
+
+        if (!shop.lat || shop.lat === 0) {
+            errors.push('latitude is invalid');
+        }
+
+        if (!shop.lng || shop.lng === 0) {
+            errors.push('longitude is invalid');
+        }
+
+        return errors;
+    };
+
     // update/insert the shop
     this.update = function(shop) {
         // prepare the shop model for insert or update
