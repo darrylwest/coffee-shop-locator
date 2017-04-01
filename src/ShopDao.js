@@ -63,10 +63,21 @@ const ShopDao = function(options = {}) {
     // update/insert the shop
     this.update = function(shop) {
         // prepare the shop model for insert or update
-        const model = dao.prepareForUpdate(shop);
 
         return new Promise((resolve, reject) => {
+            const errors = dao.validate(shop);
+            if (errors.length > 0) {
+                const err = new Error(errors.join(';'));
+                log.warn('shop model is not valid: ', err.message);
+
+                return reject(err);
+            }
+
+            dao.prepareForUpdate(shop);
+            log.info('update the shop: ', shop);
+
             idmap.set(shop.id, shop);
+            return resolve(shop);
         });
     };
 
@@ -89,6 +100,18 @@ const ShopDao = function(options = {}) {
         }
 
         return shop;
+    };
+
+    // return the number of active shops in the database
+    this.getCount = function() {
+        let count = 0;
+        idmap.forEach((value, key) => {
+            if (value.status === 'active') {
+                count++;
+            }
+        });
+
+        return count;
     };
 
     this.queryByGeo = function(loc) {

@@ -36,7 +36,8 @@ describe('ShopDao', function() {
             'queryByGeo',
             'locToGeo',
             'initData',
-            'parseCSVFile'
+            'parseCSVFile',
+            'getCount'
         ];
 
         it('should create an instance of ShopDao', function() {
@@ -184,7 +185,33 @@ describe('ShopDao', function() {
             shop.version.should.equal(11);
         });
 
-        it('should insert a new model');
+        it('should insert a new model', function(done) {
+            const shop = new ShopModel(coffeeShops[1]);
+            const count = dao.getCount();
+
+            dao.update(shop).then(model => {
+                should.exist(model.id);
+                model.id.should.be.above(0);
+                model.dateCreated.should.be.a('Date');
+                model.lastUpdated.should.be.a('Date');
+                model.dateCreated.toJSON().should.equal(model.lastUpdated.toJSON());
+                model.version.should.equal(0);
+
+                model.name.should.equal(shop.name);
+                model.address.should.equal(shop.address);
+                model.lat.should.equal(shop.lat);
+                model.lng.should.equal(shop.lng);
+                model.status.should.equal(shop.status);
+
+                // yes, it was inserted
+                dao.getCount().should.equal(count + 1);
+
+                done();
+            }).catch(err => {
+                should.not.exist(err);
+            });
+        });
+
         it('should update an existing model');
     });
 
