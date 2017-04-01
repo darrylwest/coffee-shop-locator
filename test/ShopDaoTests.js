@@ -239,14 +239,18 @@ describe('ShopDao', function() {
         it('should delete a valid model', function(done) {
             const count = dao.getCount();
             const shop = new ShopModel(shopList[18]);
+            shop.lastUpdated = new Date(Date.now() - 12);
 
             dao.delete(shop).then(model => {
                 dao.getCount().should.equal(count - 1);
 
                 model.status.should.equal(ShopModel.DELETED);
+                model.version.should.equal(shop.version + 1);
+                model.lastUpdated.getTime().should.be.above(shop.lastUpdated.getTime());
 
                 done();
             }).catch(err => {
+                console.log(err);
                 should.not.exist(err);
             });
         });

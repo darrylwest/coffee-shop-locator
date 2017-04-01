@@ -110,13 +110,15 @@ const ShopDao = function(options = {}) {
         log.info('find and delete this model: ', model.id, ', status: ', model.status);
 
         return new Promise((resolve, reject) => {
-            const shop = idmap.get(model.id);
+            let shop = idmap.get(model.id);
             if (!shop || shop.status === ShopModel.DELETED) {
                 const err = new Error(`cannot delete this model: ${model.id}`);
                 log.error(err.message);
                 return reject(err);
             }
 
+            // create a copy
+            shop = new ShopModel(shop);
             shop.status = ShopModel.DELETED;
             shop.version++;
             shop.lastUpdated = new Date();
