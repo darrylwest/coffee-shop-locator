@@ -17,12 +17,16 @@ const ShopModel = function(params = {}) {
     this.lat = Number.parseFloat(params.lat);
     this.lng = Number.parseFloat(params.lng);
 
-    this.status = params.status || 'active';
+    this.status = params.status || ShopModel.ACTIVE;
 
     if (Number.isNaN(this.lat) || Number.isNaN(this.lng)) {
-        this.status = 'invalid';
+        this.status = ShopModel.INVALID;
     }
 };
+
+ShopModel.ACTIVE = 'active';
+ShopModel.DELETED = 'deleted';
+ShopModel.INVALID = 'invalid';
 
 module.exports = ShopModel;
 

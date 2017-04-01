@@ -26,7 +26,7 @@ const ShopDao = function(options = {}) {
     this.findById = function(id) {
         return new Promise((resolve, reject) => {
             const item = idmap.get(id);
-            if (item && item.status !== 'deleted') {
+            if (item && item.status !== ShopModel.DELETED) {
                 log.info('item found by id: ', item);
                 return resolve(item);
             } else {
@@ -105,14 +105,39 @@ const ShopDao = function(options = {}) {
         return shop;
     };
 
+    // delete the model by changing status to 'deleted'...
+    this.delete = function(model) {
+        log.info('find and delete this model: ', model.id, ', status: ', model.status);
+
+        return new Promise((resolve, reject) => {
+            const shop = idmap.get(model.id);
+            if (!shop || shop.status === ShopModel.DELETED) {
+                const err = new Error(`cannot delete this model: ${model.id}`);
+                log.error(err.message);
+                return reject(err);
+            }
+
+            shop.status = ShopModel.DELETED;
+            shop.version++;
+            shop.lastUpdated = new Date();
+
+            idmap.set(shop.id, shop);
+            log.info('shop deleted: ', JSON.stringify(shop));
+
+            return resolve(shop);
+        });
+    };
+
     // return the number of active shops in the database
     this.getCount = function() {
         let count = 0;
         idmap.forEach((value, key) => {
-            if (value.status === 'active') {
+            if (value.status === ShopModel.ACTIVE) {
                 count++;
             }
         });
+
+        log.info('current count of active shops: ', count);
 
         return count;
     };

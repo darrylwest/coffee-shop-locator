@@ -30,6 +30,7 @@ describe('ShopDao', function() {
         const methods = [
             'findById',
             'update',
+            'delete',
             'prepareForUpdate',
             'validate',
             'createNextId',
@@ -79,7 +80,7 @@ describe('ShopDao', function() {
                 item.lat.should.be.a('number');
                 item.lng.should.be.a('number');
 
-                item.status.should.equal('active');
+                item.status.should.equal(ShopModel.ACTIVE);
 
                 if (item.id > maxid) {
                     maxid = item.id;
@@ -127,7 +128,7 @@ describe('ShopDao', function() {
                 shop.address.should.equal('986 Market St');
                 shop.lat.should.equal(37.782394430549445);
                 shop.lng.should.equal(-122.40997343121123);
-                shop.status.should.equal('active');
+                shop.status.should.equal(ShopModel.ACTIVE);
 
                 done();
             }).catch(err => {
@@ -149,7 +150,7 @@ describe('ShopDao', function() {
         });
     });
 
-    describe('update', function() {
+    describe('update/delete', function() {
         const dao = new ShopDao(createOptions());
         let shopList, shopMap;
 
@@ -174,7 +175,7 @@ describe('ShopDao', function() {
             shop.dateCreated.toJSON().should.equal(shop.lastUpdated.toJSON());
             shop.version.should.equal(0);
 
-            shop.status.should.equal('active');
+            shop.status.should.equal(ShopModel.ACTIVE);
         });
 
         it('should prepare an existing model for update', function() {
@@ -228,6 +229,21 @@ describe('ShopDao', function() {
                 dao.getCount().should.equal(count);
                 model.name.should.equal(shop.name);
                 model.version.should.equal(shop.version + 1);
+
+                done();
+            }).catch(err => {
+                should.not.exist(err);
+            });
+        });
+
+        it('should delete a valid model', function(done) {
+            const count = dao.getCount();
+            const shop = new ShopModel(shopList[18]);
+
+            dao.delete(shop).then(model => {
+                dao.getCount().should.equal(count - 1);
+
+                model.status.should.equal(ShopModel.DELETED);
 
                 done();
             }).catch(err => {
