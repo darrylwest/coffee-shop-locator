@@ -1,11 +1,17 @@
 [
     {
         "id":39,
-        "version":0,
+        "version":10,
         "name":"Coffee Cultures",
         "address":"1301 Mission St", 
         "lat":37.77612762238859, 
         "lng":-122.41465262422996,
         "status":"active"
+    },
+    {
+        "name":"New Coffee Shop",
+        "address":"199 Freemont St",
+        "lat":37.33,
+        "lng":-122.414
     }
 ]

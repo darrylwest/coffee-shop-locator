@@ -117,7 +117,9 @@ describe('ShopDao', function() {
                 
             dao.findById(knownId).then(shop => {
                 shop.id.should.equal(knownId);
-                shop.dateCreated.should.equal(shop.lastUpdated);
+                shop.dateCreated.should.be.a('Date');
+                shop.lastUpdated.should.be.a('Date');
+                shop.dateCreated.toJSON().should.equal(shop.lastUpdated.toJSON());
                 shop.version.should.equal(0);
 
                 shop.name.should.equal('Equator Coffees & Teas');
@@ -146,6 +148,46 @@ describe('ShopDao', function() {
         });
     });
 
+    describe('update', function() {
+        const dao = new ShopDao(createOptions());
+
+        it('should prepare a new model for insert', function() {
+            const shop = new ShopModel(coffeeShops[1]);
+
+            should.not.exist(shop.id);
+            should.not.exist(shop.dateCreated);
+            should.not.exist(shop.lastUpdated);
+
+            dao.prepareForUpdate(shop);
+            should.exist(shop.id);
+            shop.id.should.equal(1);
+            shop.dateCreated.should.be.a('Date');
+            shop.lastUpdated.should.be.a('Date');
+            shop.dateCreated.toJSON().should.equal(shop.lastUpdated.toJSON());
+            shop.version.should.equal(0);
+
+            shop.status.should.equal('active');
+        });
+
+        it('should prepare an existing model for update', function() {
+            const shop = new ShopModel(coffeeShops[0]);
+            shop.name = 'This is a new name';
+            shop.dateCreated = shop.lastUpdated = new Date(Date.now() - 1000);
+
+            dao.prepareForUpdate(shop);
+
+            should.exist(shop.id);
+            shop.id.should.equal(39);
+            shop.dateCreated.should.be.a('Date');
+            shop.lastUpdated.should.be.a('Date');
+            shop.dateCreated.getTime().should.be.below(shop.lastUpdated.getTime());
+            shop.version.should.equal(11);
+        });
+
+        it('should insert a new model');
+        it('should update an existing model');
+    });
+
     describe('validate', function() {
         const dao = new ShopDao(createOptions());
 
@@ -167,15 +209,6 @@ describe('ShopDao', function() {
             const errors = dao.validate(shop);
             errors.length.should.equal(4);
         });
-    });
-
-    describe('update', function() {
-        const dao = new ShopDao(createOptions());
-
-        it('should prepare a new model for insert');
-        it('should prepare an existing model for update');
-        it('should insert a new model');
-        it('should update an existing model');
     });
 
 });

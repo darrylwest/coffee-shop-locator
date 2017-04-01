@@ -81,10 +81,11 @@ const ShopDao = function(options = {}) {
         }
 
         shop.lastUpdated = new Date();
+
         if (!shop.version) {
             shop.version = 0;
         } else {
-            shop.version++;
+            shop.version += 1;
         }
 
         return shop;
