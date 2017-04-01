@@ -97,7 +97,7 @@ describe('ShopDao', function() {
     describe('createNextId', function() {
         const dao = new ShopDao(createOptions());
 
-        it('should return the next id', function() {
+        it('should return the next id starting with 1 if external data is not loaded', function() {
             let id = dao.createNextId();
             id.should.equal(1);
             id = dao.createNextId();
@@ -109,8 +109,38 @@ describe('ShopDao', function() {
         const dao = new ShopDao(createOptions());
         dao.initData();
 
-        it('should return a single coffee shop for a given id');
-        it('should return an error if coffee shop is not found for given id');
+        it('should return a single coffee shop for a given id', function(done) {
+            const knownId = 1;
+                
+            dao.findById(knownId).then(shop => {
+                shop.id.should.equal(knownId);
+                shop.dateCreated.should.equal(shop.lastUpdated);
+                shop.version.should.equal(0);
+
+                shop.name.should.equal('Equator Coffees & Teas');
+                shop.address.should.equal('986 Market St');
+                shop.lat.should.equal(37.782394430549445);
+                shop.lng.should.equal(-122.40997343121123);
+                shop.status.should.equal('active');
+
+                done();
+            }).catch(err => {
+                console.log(err);
+                should.not.exist(err);
+            });
+        });
+
+        it('should return an error if coffee shop is not found for given id', function(done) {
+            const badid = 50000;
+            dao.findById(badid).then(shop => {
+                console.log(shop);
+                should.not.exist(shop);
+            }).catch(err => {
+                should.exist(err);
+                err.message.indexOf('not found').should.be.above(0);
+                done();
+            });
+        });
     });
 
 });

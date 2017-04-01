@@ -22,6 +22,7 @@ const ShopDao = function(options = {}) {
     let idmap = new Map(); // shop index by id
     let nextId = 0;
 
+    // find the coffee shop by id
     this.findById = function(id) {
         return new Promise((resolve, reject) => {
             const item = idmap.get(id);
@@ -36,6 +37,7 @@ const ShopDao = function(options = {}) {
         });
     };
 
+    // update/insert the shop
     this.update = function(shop) {
         // prepare the shop model for insert or update
         const model = dao.prepareForUpdate(shop);
