@@ -34,8 +34,7 @@ describe('ShopDao', function() {
             'prepareForUpdate',
             'validate',
             'createNextId',
-            'queryByGeo',
-            'locToGeo',
+            'findNearest',
             'initData',
             'parseCSVFile',
             'getCount'
@@ -276,6 +275,45 @@ describe('ShopDao', function() {
 
             const errors = dao.validate(shop);
             errors.length.should.equal(4);
+        });
+    });
+
+    describe('findNearest', function() {
+        const dao = new ShopDao(createOptions());
+        dao.initData();
+
+        it('should find the nearest to 535 Mission St', function(done) {
+
+            // todo pull these from known address; this one is 535 Mission St
+            const lat = 37.788866;
+            const lng = -122.39821;
+
+            dao.findNearest(lat, lng).then(shop => {
+                should.exist(shop);
+
+                shop.id.should.equal(16);
+
+                done();
+            }).catch(err => {
+                console.log(err);
+                should.not.exist(err);
+            });
+        });
+
+        it('should find the nearest to 2101 Sutter St', function(done) {
+            const lat = 37.785727;
+            const lng = -122.4350462;
+
+            dao.findNearest(lat, lng).then(shop => {
+                should.exist(shop);
+
+                shop.id.should.equal(22);
+
+                done();
+            }).catch(err => {
+                console.log(err);
+                should.not.exist(err);
+            });
         });
     });
 

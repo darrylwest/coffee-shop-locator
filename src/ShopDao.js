@@ -18,7 +18,6 @@ const ShopDao = function(options = {}) {
     const log = options.log;
     const datafile = options.datafile || './database/locations.csv';
 
-    let db = null;
     let idmap = new Map(); // shop index by id
     let nextId = 0;
 
@@ -144,43 +143,62 @@ const ShopDao = function(options = {}) {
         return count;
     };
 
-    this.queryByGeo = function(loc) {
-        const maxkm = 50 * 1.609344;
+    // find the nearest shop to the specified locaion lat/lng
+    this.findNearest = function(lat, lng) {
+        log.info(`find nearest shop to lat/lng ${lat}/${lng}`);
+        const target = { 
+            latitude: lat,
+            longitude: lng
+        };
+
+        let nearest = null;
 
         return new Promise((resolve, reject) => {
-            const list = db.filter(item => {
-                // determine distance from loc
-                // return true if target is within 50 mi (80 kilos)...
-                return dao.isDistanceWithin(maxkm, item.loc, loc);
-            });
+            idmap.forEach((shop, key) => {
+                if (shop.status !== ShopModel.ACTIVE) {
+                    log.debug('skip ', shop.id);
+                    return;
+                }
 
-             if (list) {
-                log.info(`query by geo ${loc}, found ${list.length} items`);
-                return resolve(list);
+                const geo = {
+                    latitude: shop.lat,
+                    longitude: shop.lng
+                };
+
+                const distance = geolib.getDistance(target, geo) / 1000;
+                log.info(`from ${JSON.stringify(target)} to ${JSON.stringify(geo)} = ${distance} ${shop.id} ${shop.name}`);
+
+                if (nearest && distance < nearest.distance) {
+                    nearest.distance = distance;
+                    nearest.shop = shop;
+                    log.info(`new nearest distance: ${distance} id: ${shop.id} ${shop.name} ${shop.address}`);
+                } else if (!nearest) {
+                    nearest = {
+                        distance:distance,
+                        shop:shop
+                    };
+                }
+
+            });
+            
+            if (nearest) {
+                log.info(`return the nearest, id: ${nearest.shop.id}, distance: ${nearest.distance}`);
+                return resolve(nearest.shop);
             } else {
-                return reject(new Error(`bad query for loc=${loc}`));
+                return reject(new Error(`bad query for lat/lng=${lat}/${lng}`));
             }
         });
     };
 
-    // takes a standard location [ lat, long ] and returns an object { latitude:n, longitude:m }
-    this.locToGeo = function(loc) {
-        const [ lat, long ] = loc;
-        const geo = { latitude: lat, longitude: long };
-        return geo;
-    };
-
     // initialize coffee shops from database
     this.initData = function() {
-        if (!db) {
-            const shops = dao.parseCSVFile(datafile);
+        const shops = dao.parseCSVFile(datafile);
 
-            db = shops.map(shop => {
-                const model = new ShopModel( shop );
-                idmap.set(model.id, model);
-                return model;
-            });
-        }
+        const db = shops.map(shop => {
+            const model = new ShopModel( shop );
+            idmap.set(model.id, model);
+            return model;
+        });
 
         return [ db, idmap ];
     };
