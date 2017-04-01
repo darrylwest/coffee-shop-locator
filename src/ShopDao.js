@@ -26,7 +26,7 @@ const ShopDao = function(options = {}) {
     this.findById = function(id) {
         return new Promise((resolve, reject) => {
             const item = idmap.get(id);
-            if (item) {
+            if (item && item.status !== 'deleted') {
                 log.info('item found by id: ', item);
                 return resolve(item);
             } else {
@@ -61,11 +61,11 @@ const ShopDao = function(options = {}) {
     };
 
     // update/insert the shop
-    this.update = function(shop) {
+    this.update = function(model) {
         // prepare the shop model for insert or update
 
         return new Promise((resolve, reject) => {
-            const errors = dao.validate(shop);
+            const errors = dao.validate(model);
             if (errors.length > 0) {
                 const err = new Error(errors.join(';'));
                 log.warn('shop model is not valid: ', err.message);
@@ -73,18 +73,27 @@ const ShopDao = function(options = {}) {
                 return reject(err);
             }
 
-            dao.prepareForUpdate(shop);
+            const shop = dao.prepareForUpdate(model);
             log.info('update the shop: ', shop);
 
-            idmap.set(shop.id, shop);
+            idmap.set(model.id, shop);
             return resolve(shop);
         });
     };
 
     // prepare the coffee shop model for insert/update by assigning id, date created/updated and version
-    this.prepareForUpdate = function(shop) {
+    this.prepareForUpdate = function(model) {
+        log.info('prepare shop for update: ', model);
+
+        // clone a copy
+        const shop = new ShopModel(model);
+
         if (!shop.id) {
             shop.id = dao.createNextId();
+            log.info('new shop id:', shop.id);
+        } else {
+            shop.version += 1;
+            log.info('update to new version: ', shop.version);
         }
 
         if (!shop.dateCreated) {
@@ -92,12 +101,6 @@ const ShopDao = function(options = {}) {
         }
 
         shop.lastUpdated = new Date();
-
-        if (!shop.version) {
-            shop.version = 0;
-        } else {
-            shop.version += 1;
-        }
 
         return shop;
     };
@@ -140,6 +143,7 @@ const ShopDao = function(options = {}) {
         return geo;
     };
 
+    // initialize coffee shops from database
     this.initData = function() {
         if (!db) {
             const shops = dao.parseCSVFile(datafile);

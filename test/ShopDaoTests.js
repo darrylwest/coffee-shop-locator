@@ -151,17 +151,24 @@ describe('ShopDao', function() {
 
     describe('update', function() {
         const dao = new ShopDao(createOptions());
+        let shopList, shopMap;
+
+        // load the data...
+        before(done => {
+            [ shopList, shopMap ] = dao.initData();
+            done();
+        });
 
         it('should prepare a new model for insert', function() {
-            const shop = new ShopModel(coffeeShops[1]);
+            const model = new ShopModel(coffeeShops[1]);
 
-            should.not.exist(shop.id);
-            should.not.exist(shop.dateCreated);
-            should.not.exist(shop.lastUpdated);
+            should.not.exist(model.id);
+            should.not.exist(model.dateCreated);
+            should.not.exist(model.lastUpdated);
 
-            dao.prepareForUpdate(shop);
+            const shop = dao.prepareForUpdate(model);
             should.exist(shop.id);
-            shop.id.should.equal(1);
+            shop.id.should.equal(57);
             shop.dateCreated.should.be.a('Date');
             shop.lastUpdated.should.be.a('Date');
             shop.dateCreated.toJSON().should.equal(shop.lastUpdated.toJSON());
@@ -171,11 +178,11 @@ describe('ShopDao', function() {
         });
 
         it('should prepare an existing model for update', function() {
-            const shop = new ShopModel(coffeeShops[0]);
-            shop.name = 'This is a new name';
-            shop.dateCreated = shop.lastUpdated = new Date(Date.now() - 1000);
+            const model = new ShopModel(coffeeShops[0]);
+            model.name = 'This is a new name';
+            model.dateCreated = model.lastUpdated = new Date(Date.now() - 1000);
 
-            dao.prepareForUpdate(shop);
+            const shop = dao.prepareForUpdate(model);
 
             should.exist(shop.id);
             shop.id.should.equal(39);
@@ -212,7 +219,21 @@ describe('ShopDao', function() {
             });
         });
 
-        it('should update an existing model');
+        it('should update an existing model', function(done) {
+            const count = dao.getCount();
+            const shop = new ShopModel(shopList[5]);
+
+            dao.update(shop).then(model => {
+                // update not insert
+                dao.getCount().should.equal(count);
+                model.name.should.equal(shop.name);
+                model.version.should.equal(shop.version + 1);
+
+                done();
+            }).catch(err => {
+                should.not.exist(err);
+            });
+        });
     });
 
     describe('validate', function() {
