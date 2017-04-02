@@ -86,7 +86,11 @@ const Handlers = function(options = {}) {
             model.dateCreated = shop.dateCreated;
 
             // check to see that the version is the same or older...
-            model.version = shop.verion;
+            if (model.version < shop.version) {
+                const err = new Error('model version is less than databse version, reject the update...');
+                log.warn(err.message);
+                return errorHandler(err);
+            }
 
             dao.update(model).then(um => {
                 const payload = handlers.createPayload(OK, um);
@@ -145,6 +149,7 @@ const Handlers = function(options = {}) {
         }).catch(errorHandler);
     };
 
+    // return the application status including database row count
     this.getStatus = function(request, response) {
         const status = {
             dbsize: dao.getCount()
