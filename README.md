@@ -18,14 +18,17 @@ The coffee shop locator challenge project is implemented with nodejs version 6.9
 * express 4.15.2 as the REST server
 * geolib 2.0.22 for location search
 * simple-node-logger 0.93.17 for application logging
+* body-parser 1.17.1 to enable json parsing
 
 Test dependencies include mocha, chai, jshint, mock-express.
 
 ## Installation
 
+Follow these steps...
 
 ```
 git clone https://github.com/darrylwest/coffee-shop-locator.git
+cd coffee-shop-locator
 npm install
 make test
 make start
@@ -35,7 +38,7 @@ make integration
 
 This will start that application service running in the background.  Log statements are written to the logs folder and you check the nohup.out file to see what the log filename is.
 
-At this point you can run the integration tests to get a feeling for what the API will return. 
+The integration tests fully exercise the API. 
 
 ## API Use
 
@@ -126,4 +129,4 @@ Given more time, here are some enhancements that I would make:
 
 Apache 2.0
 
-###### darryl.west | Version 2017-04-01
+###### darryl.west | Version 2017-04-02
