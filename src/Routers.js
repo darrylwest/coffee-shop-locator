@@ -34,8 +34,7 @@ const Routers = function(options = {}) {
         app.put(`${route}/:id`, handlers.updateShop);
         app.del(`${route}/:id`, handlers.deleteShop);
 
-        app.get(`{route}/nearest`, handlers.findNearestShop);
-
+        app.get(`/locate/nearest`, handlers.findNearestShop);
     };
 
     // construction validation
