@@ -24,7 +24,8 @@ describe('CoordinateLocator', function() {
     describe('#instance', function() {
         const locator = new CoordinateLocator(createOptions());
         const methods = [
-            'findCoordinates'
+            'findCoordinates',
+            'findInCache'
         ];
 
         it('should create an instance of CoordinateLocator', function() {
@@ -44,10 +45,11 @@ describe('CoordinateLocator', function() {
     describe('findCoordinates', function() {
         // TODO mock out the https component
         const locator = new CoordinateLocator(createOptions());
+        const address = '535 Mission St, San Francisco, CA';
 
+        // this is actually a functional test because I didn't have time to mock the https/req/resp
         it('should find coordinates for 535 Mission', function(done) {
-            const street = '535 Mission St';
-            locator.findCoordinates(street).then(loc => {
+            locator.findCoordinates(address).then(loc => {
                 loc.address.should.equal('535 Mission Street, San Francisco, CA 94105, USA');
                 should.exist(loc.location);
                 loc.lat.should.equal(37.788866);
@@ -60,7 +62,18 @@ describe('CoordinateLocator', function() {
             });
         });
 
-        it('should find coordinates from a cached address');
+        it('should find coordinates from a cached address', function() {
+            // since we just did a find with the same address, there should be results
+            const loc = locator.findInCache(address);
+            should.exist(loc);
+            loc.lat.should.equal(37.788866);
+            loc.lng.should.equal(-122.39821);
+        });
+
+        it('should return null if the address is not in cache', function() {
+            const loc = locator.findInCache('2634 Woolsey St, SF, 94222');
+            should.not.exist(loc);
+        });
     });
 
 });

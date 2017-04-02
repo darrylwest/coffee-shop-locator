@@ -13,8 +13,7 @@ const CoordinateLocator = function(options = {}) {
     const cache = options.cache || new Map();
 
     // find and return the coordinates given the address; if found, cleanup and return the address
-    this.findCoordinates = function(street, city = 'SF', state = 'CA', zip = '') {
-        const address = `${street}, ${city}, ${state}, ${zip}`;
+    this.findCoordinates = function(address) {
         log.info(`find coordinates for ${address}`);
 
         const opts = {
@@ -66,6 +65,7 @@ const CoordinateLocator = function(options = {}) {
                         log.info('returning multiple hits: ', result.list.length);
                     }
 
+                    cache.set(address, result);
                     return resolve(result);
                 } else {
                     const err = new Error(`unable to locate coordinates for address ${address} ${errors.join(';')}`);
@@ -76,6 +76,11 @@ const CoordinateLocator = function(options = {}) {
 
             req.end();
         });
+    };
+
+    this.findInCache = function(address) {
+        const result = cache.get(address);
+        return result;
     };
 
     // construction validation
