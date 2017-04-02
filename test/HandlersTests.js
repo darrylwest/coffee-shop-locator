@@ -100,7 +100,14 @@ describe('Handlers', function() {
             handlers.findShopById(mockExpress.createGetRequest(knownShop.id), response);
         });
 
-        it('should return an error if item not found');
+        it('should return an error if item not found', function(done) {
+            const response = mockExpress.createResponse();
+            response.sendStatus = function(status) {
+                status.should.equal(404);
+                done();
+            };
+            handlers.findShopById(mockExpress.createGetRequest(4323443), response);
+        });
     });
 
     describe('insert/update/delete', function() {
