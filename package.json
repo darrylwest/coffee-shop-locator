@@ -1,6 +1,6 @@
 {
   "name": "coffee-shop-locator",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A simple coffee shop locator to find the closest coffee shop based on geo location...",
   "main": "app.js",
   "directories": {
@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/darrylwest/coffee-shop-locator#readme",
   "dependencies": {
+    "body-parser": "^1.17.1",
     "express": "^4.15.2",
     "geolib": "^2.0.22",
     "simple-node-logger": "^0.93.17"
@@ -37,7 +38,7 @@
     "jshint-stylish": "^2.2.1",
     "mocha": "^3.2.0"
   },
-  "port":3002,
+  "port": 3002,
   "logPath": "./logs",
   "apikey": "01BCGE4TN75GJKR2ZS2PPGCZZH"
 }

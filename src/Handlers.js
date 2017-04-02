@@ -43,8 +43,33 @@ const Handlers = function(options = {}) {
      * update an existing coffee shop and return the shop's id; return error (40x) if shop could not be updated
      */
     this.updateShop = function(request, response) {
-        const id = request.params.id || request.query.id;
-        log.info('update an existing shop: ', id);
+        const id = request.params.id;
+        log.info('find and update an existing shop: ', id);
+
+        const errorHandler = function(err) {
+            log.error('update error: ', err.message);
+            return response.sendStatus(404);
+        };
+
+        dao.findById(id).then(shop => {
+            // now get the update model
+            let model = request.body;
+            if (typeof model === 'string') {
+                model = JSON.parse(model);
+            }
+
+            model.id = shop.id;
+            model.dateCreated = shop.dateCreated;
+
+            // check to see that the version is the same or older...
+            model.version = shop.verion;
+
+            dao.update(model).then(um => {
+                const payload = handlers.createPayload(OK, um);
+                log.info('updated model: ', um);
+                return response.send(payload);
+            }).catch(errorHandler);
+        }).catch(errorHandler);
     };
 
     /**

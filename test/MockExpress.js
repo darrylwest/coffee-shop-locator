@@ -4,18 +4,21 @@
  * @author: darryl.west@roundpeg.com
  * @created 2017-04-01
  */
+'use strict';
 const httpMocks = require('express-mocks-http' );
 
-const MockExpress = function() {
-    'use strict';
+/* jshint -W071 */
+const MockExpress = function(options = {}) {
 
-    var mock = this;
+    const mock = this;
+    const route = options.route || '/coffeeshop';
 
     this.port = -1;
     this.routes = [];
     this.uses = [];
     this.enables = [];
     this.disables = [];
+
 
     this.get = function(path, fn) {
         mock.routes.push( { method:'get', path:path, fn:fn });
@@ -53,8 +56,40 @@ const MockExpress = function() {
         const obj = {
             method:'GET',
             params:{ id: id },
-            url: `/coffeeshop/${id}`
+            url: `${route}/${id}`
         };
+        
+        return mock.createRequest(obj);
+    };
+
+    this.createPostRequest = function(model) {
+        const obj = {
+            method:'POST',
+            url: `${route}`,
+            body: JSON.stringify(model)
+        };
+
+        return mock.createRequest(obj);
+    };
+
+    this.createPutRequest = function(model) {
+        const obj = {
+            method:'PUT',
+            params:{ id: model.id },
+            url: `${route}/${model.id}`,
+            body: JSON.stringify(model)
+        };
+
+        return mock.createRequest(obj);
+    };
+
+    this.createDeleteRequest = function(id) {
+        const obj = {
+            method:'DELETE',
+            params: { id: id },
+            url: `${route}/${id}`
+        };
+        
         return mock.createRequest(obj);
     };
 
@@ -79,8 +114,8 @@ const MockExpress = function() {
         const response = httpMocks.createExpressResponse();
 
         // TODO override send and json to set the statusCode
-        response.sendStatus = function() {
-
+        response.sendStatus = function(status) {
+            console.log('error status: ', status);
         };
 
         if (typeof callback === 'function') {
@@ -94,6 +129,8 @@ const MockExpress = function() {
 
         return response;
     };
+
 };
+/* jshint +W071 */
 
 module.exports = MockExpress;

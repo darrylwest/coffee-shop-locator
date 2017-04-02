@@ -119,9 +119,38 @@ describe('Handlers', function() {
 
         it('should reject a bad insert request');
 
-        it('should update an existing coffee shop and return the id');
+        it('should update an existing coffee shop and return the id', function(done) {
+            // get a copy...
+            const knownShop = new ShopModel(db[30]);
+            knownShop.name = 'Plain Jane';
+            const response = mockExpress.createResponse();
+            response.send = function(payload) {
+                should.exist( payload );
+                payload.status.should.equal('ok');
+                const shop = payload.data;
 
-        it('should reject a bad update request');
+                shop.id.should.equal( knownShop.id );
+                shop.version.should.equal( knownShop.version + 1 );
+                shop.name.should.equal(knownShop.name);
+                
+                done();
+            };
+
+            const request = mockExpress.createPutRequest(knownShop);
+            handlers.updateShop(request, response);
+        });
+
+        it('should reject a bad update request', function(done) {
+            const model = new ShopModel(db[31]);
+            model.id = 222222;
+            const response = mockExpress.createResponse();
+            response.sendStatus = function(status) {
+                status.should.equal(404);
+                done();
+            };
+
+            handlers.deleteShop(mockExpress.createPutRequest(model), response);
+        });
 
         it('should delete an existing coffee shop and return the id', function(done) {
             const knownShop = db[23];
@@ -136,7 +165,7 @@ describe('Handlers', function() {
                 done();
             };
 
-            handlers.deleteShop(mockExpress.createGetRequest(knownShop.id), response);
+            handlers.deleteShop(mockExpress.createDeleteRequest(knownShop.id), response);
         });
 
         it('should reject a bad delete request', function(done) {
@@ -146,7 +175,7 @@ describe('Handlers', function() {
                 done();
             };
 
-            handlers.deleteShop(mockExpress.createGetRequest(4323443), response);
+            handlers.deleteShop(mockExpress.createDeleteRequest(4323443), response);
         });
     });
 
