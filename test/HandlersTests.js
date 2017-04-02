@@ -106,11 +106,13 @@ describe('Handlers', function() {
                 status.should.equal(404);
                 done();
             };
+
             handlers.findShopById(mockExpress.createGetRequest(4323443), response);
         });
     });
 
-    describe('insert/update/delete', function() {
+    describe.only('insert/update/delete', function() {
+        const mockExpress = new MockExpress();
         const handlers = new Handlers( createOptions() );
 
         it('should insert a new coffee shop and return the new id');
@@ -122,13 +124,30 @@ describe('Handlers', function() {
         it('should reject a bad update request');
 
         it('should delete an existing coffee shop and return the id', function(done) {
-            const shop = db[23];
-            // console.log(shop);
+            const knownShop = db[23];
+            const response = mockExpress.createResponse();
+            response.send = function(payload) {
+                should.exist( payload );
+                payload.status.should.equal('ok');
+                const data = payload.data;
 
-            done();
+                data.id.should.equal( knownShop.id );
+                
+                done();
+            };
+
+            handlers.deleteShop(mockExpress.createGetRequest(knownShop.id), response);
         });
 
-        it('should reject a bad delete request');
+        it('should reject a bad delete request', function(done) {
+            const response = mockExpress.createResponse();
+            response.sendStatus = function(status) {
+                status.should.equal(404);
+                done();
+            };
+
+            handlers.deleteShop(mockExpress.createGetRequest(4323443), response);
+        });
     });
 
     describe('createPayload', function() {
