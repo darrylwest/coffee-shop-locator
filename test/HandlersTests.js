@@ -111,13 +111,65 @@ describe('Handlers', function() {
         });
     });
 
-    describe.only('insert/update/delete', function() {
+    describe('insert/update/delete', function() {
         const mockExpress = new MockExpress();
         const handlers = new Handlers( createOptions() );
 
-        it('should insert a new coffee shop and return the new id');
+        it('should insert a new coffee shop and return the new id', function(done) {
+            const model = {
+                name : 'My New Coffee Shoppe',
+                address : '222 State Street',
+                lat : 38.444,
+                lng : -122.443
+            };
 
-        it('should reject a bad insert request');
+            const response = mockExpress.createResponse();
+            response.send = function(payload) {
+                should.exist(payload);
+
+                payload.status.should.equal('ok');
+                const shop = payload.data;
+                shop.id.should.be.above(50);
+                shop.dateCreated.getTime().should.equal(shop.lastUpdated.getTime());
+                shop.name.should.equal(model.name);
+                shop.address.should.equal(model.address);
+                shop.lat.should.equal(model.lat);
+                shop.lng.should.equal(model.lng);
+                shop.status.should.equal(ShopModel.ACTIVE);
+
+                done();
+            };
+
+            const request = mockExpress.createPostRequest(model);
+            handlers.insertShop(request, response);
+        });
+
+        it('should reject a bad insert request with invalid parameters', function(done) {
+            const model = {
+                name:'Bad Shop',
+                address:'x'
+            };
+
+            const response = mockExpress.createResponse();
+            response.sendStatus = function(status) {
+                status.should.equal(403);
+                done();
+            };
+
+            handlers.insertShop(mockExpress.createPostRequest(model), response);
+        });
+
+        it('should reject a insert request with an id', function(done) {
+            const model = db[3];
+
+            const response = mockExpress.createResponse();
+            response.sendStatus = function(status) {
+                status.should.equal(403);
+                done();
+            };
+
+            handlers.insertShop(mockExpress.createPostRequest(model), response);
+        });
 
         it('should update an existing coffee shop and return the id', function(done) {
             // get a copy...
@@ -140,7 +192,7 @@ describe('Handlers', function() {
             handlers.updateShop(request, response);
         });
 
-        it('should reject a bad update request', function(done) {
+        it('should reject a bad update request for unknown id', function(done) {
             const model = new ShopModel(db[31]);
             model.id = 222222;
             const response = mockExpress.createResponse();
@@ -151,6 +203,8 @@ describe('Handlers', function() {
 
             handlers.deleteShop(mockExpress.createPutRequest(model), response);
         });
+
+        it('should reject a bad update for missing shop parameters');
 
         it('should delete an existing coffee shop and return the id', function(done) {
             const knownShop = db[23];

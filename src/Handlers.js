@@ -10,6 +10,8 @@
 const OK = 'ok';
 const FAILED = 'failed';
 
+const ShopModel = require('./ShopModel');
+
 const Handlers = function(options = {}) {
     const handlers = this;
     const log = options.log;
@@ -36,7 +38,28 @@ const Handlers = function(options = {}) {
      * insert a new coffee shop and return the shop's id; return error (40x) if shop could not be inserted
      */
     this.insertShop = function(request, response) {
-        log.info('insert a new coffee shop: ', request.query);
+        log.info('insert a new coffee shop: ', request.body);
+
+        let model = request.body;
+        if (typeof model === 'string') {
+            model = JSON.parse(model);
+            log.info('parsed string model to: ', model);
+        }
+        if (model.id) {
+            log.error('cannot insert an existing model, id: ', model.id);
+            return response.sendStatus(403);
+        }
+
+        const newShop = new ShopModel(model);
+
+        dao.update(newShop).then(shop => {
+            const payload = handlers.createPayload(OK, shop);
+            log.info('inserted new shop: ', shop);
+            return response.send(payload);
+        }).catch(err => {
+            log.info('insert error: ', err.message);
+            return response.sendStatus(403);
+        });
     };
 
     /**
