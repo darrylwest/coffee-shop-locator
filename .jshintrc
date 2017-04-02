@@ -19,7 +19,7 @@
     "smarttabs": true,
     "jquery": true,
     "phantom": true,
-    "maxparams": 4,
+    "maxparams": 3,
     "maxdepth": 3,
     "quotmark": false,
     "unused": false,
