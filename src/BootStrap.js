@@ -7,6 +7,7 @@
 'use strict';
 
 const ShopDao = require('./ShopDao');
+const CoordinateLocator = require('./CoordinateLocator');
 const Handlers = require('./Handlers');
 const Routers = require('./Routers');
 const SimpleLogger = require('simple-node-logger');
@@ -22,6 +23,7 @@ const BootStrap = function(options = {}) {
 
     let routers = options.routers;
     let handlers = options.handlers;
+    let coordinateLocator = options.coordinateLocator;
     let dao = options.dao;
 
     // configure the application
@@ -37,52 +39,71 @@ const BootStrap = function(options = {}) {
             log.info('configure application, version: ', options.version);
         }
 
+        dao = bootStrap.createShopDao();
+        coordinateLocator = bootStrap.createCoordinateLocator();
+        handlers = bootStrap.createHandlers();
+        routers = bootStrap.createRouters();
+
+        // return reference to enable chaining
+        return bootStrap;
+    };
+
+    this.createShopDao = function() {
         if (!dao) {
             log.info('create the shop dao');
-            let opts = {
+            const opts = {
                 log:createLogger("ShopDao")
             };
 
             dao = new ShopDao(opts);
 
-            // TODO : is this the right place for this? maybe create a start method...
             dao.initData();
         }
+        return dao;
+    };
 
+    this.createCoordinateLocator = function() {
+        if (!coordinateLocator) {
+            log.info('create the coordinate locator');
+
+            const opts = {
+                log:createLogger('CoordinateLocator')
+            };
+
+            coordinateLocator = new CoordinateLocator(log);
+        }
+
+        return coordinateLocator;
+    };
+
+    this.createHandlers = function() {
         if (!handlers) {
             log.info('create the Handlers');
-            let opts = {
+            const opts = {
                 log:createLogger("Handlers"),
-                dao:dao
+                dao:bootStrap.createShopDao(),
+                coordinateLocator:bootStrap.createCoordinateLocator()
             };
 
             handlers = new Handlers(opts);
         }
 
+        return handlers;
+    };
+
+    this.createRouters = function() {
         if (!routers) {
             log.info('create the Routers');
-            let opts = {
+
+            const opts = {
                 log:createLogger('Routers'),
-                handlers:handlers
+                handlers:bootStrap.createHandlers()
             };
 
             routers = new Routers(opts);
             routers.assignRoutes(app);
         }
 
-        // return reference to enable chaining
-        return bootStrap;
-    };
-
-    this.getShopDao = function() {
-        return dao;
-    };
-
-    this.getHandlers = function() {
-        return handlers;
-    };
-
-    this.getRouters = function() {
         return routers;
     };
 

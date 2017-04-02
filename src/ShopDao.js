@@ -23,13 +23,18 @@ const ShopDao = function(options = {}) {
 
     // find the coffee shop by id
     this.findById = function(id) {
+        // coerce to int type
+        id = parseInt(id);
+
+        log.info('find shop by id: ', id);
+
         return new Promise((resolve, reject) => {
             const item = idmap.get(id);
             if (item && item.status !== ShopModel.DELETED) {
-                log.info('item found by id: ', item);
+                log.info('shop found by id: ', item);
                 return resolve(item);
             } else {
-                const err = new Error(`model not found for id: ${id}`);
+                const err = new Error(`shop not found for id: ${id}`);
                 log.warn(err.message);
                 return reject(err);
             }

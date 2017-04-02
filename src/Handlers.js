@@ -21,6 +21,7 @@ const Handlers = function(options = {}) {
     this.findShopById = function(request, response) {
         const id = request.params.id || request.query.id;
         log.info('find shop by id: ', id);
+
         dao.findById(id).then(item => {
             const payload = handlers.createPayload(OK, item);
             log.info('returning payload: ', payload);

@@ -10,6 +10,7 @@ const MockExpress = require('./MockExpress');
 const SimpleLogger = require('simple-node-logger');
 const BootStrap = require('../src/BootStrap');
 const ShopDao = require('../src/ShopDao');
+const CoordinateLocator = require('../src/CoordinateLocator');
 const Handlers = require('../src/Handlers');
 const Routers = require('../src/Routers');
 
@@ -29,9 +30,10 @@ describe('BootStrap', function() {
         const bootStrap = new BootStrap( createOptions() );
         const methods = [ 
             'configure',
-            'getShopDao',
-            'getHandlers',
-            'getRouters',
+            'createShopDao',
+            'createCoordinateLocator',
+            'createHandlers',
+            'createRouters',
             'createLogManager'
         ];
 
@@ -55,9 +57,10 @@ describe('BootStrap', function() {
 
             should.exist( bootStrap );
             bootStrap.should.be.instanceof( BootStrap );
-            bootStrap.getShopDao().should.be.instanceof( ShopDao );
-            bootStrap.getHandlers().should.be.instanceof( Handlers );
-            bootStrap.getRouters().should.be.instanceof( Routers );
+            bootStrap.createShopDao().should.be.instanceof( ShopDao );
+            bootStrap.createCoordinateLocator().should.be.instanceof( CoordinateLocator );
+            bootStrap.createHandlers().should.be.instanceof( Handlers );
+            bootStrap.createRouters().should.be.instanceof( Routers );
         });
     });
 
