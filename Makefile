@@ -22,11 +22,15 @@ run:
 start:
 	@( export NODE_DEV=production && nohup node app.js & )
 
-integration-tests:
-	@( ./integration-tests/findItemById.sh )
-	@( ./integration-tests/queryByUserId.sh )
-	@( ./integration-tests/queryAll.sh )
-	@( ./integration-tests/queryByGeo.sh )
+integration:
+	@( ./test/integration/findShopById.sh )
+	@( ./test/integration/insertShop.sh )
+	@( ./test/integration/updateShop.sh )
+	@( ./test/integration/deleteShop.sh )
+	@( ./test/integration/findNearest.sh )
+
+status:
+	@( ./test/integration/getStatus.sh )
 
 watch:
 	@( ./watcher.js )

@@ -29,6 +29,8 @@ git clone https://github.com/darrylwest/coffee-shop-locator.git
 npm install
 make test
 make start
+make status
+make integration
 ```
 
 This will start that application service running in the background.  Log statements are written to the logs folder and you check the nohup.out file to see what the log filename is.
@@ -49,7 +51,7 @@ Here is the specific routing:
 * post /coffeeshop/ - validate and insert a new coffee shop and returns the shop's id
 * put /coffeeshop/:id - updates a shop with new values and returns the updated model if found, validated and updated, else returns a 404 error
 * delete /coffeeshop/:id - finds and deletes a coffee shop and returns the id, else returns a 404
-* get /coffeeshop/nearest?address=<address> - finds and returns the nearest coffee shop 
+* get /locate/nearest?address=<address> - finds and returns the nearest coffee shop (address must be escaped)
 
 ## Tests
 
@@ -73,7 +75,6 @@ There are good news and bad news test/exercises for each endpoint.
 * package.json for npm packaging
 * Makefile to orchestrate tests and start the app
 * watcher script that runs during development to run the full set of unit tests on file save
-* docker container with start-up script
 * tools folder with ad-hoc / sandbox tests
 * a travis yaml file for CI testing
 
@@ -87,8 +88,9 @@ There are also a set of integration tests, really more like exercises against th
   
 ### Application Logging
 
-_Why this is important..._
+For this stage, the logging is rather verbose--for a reason.  It serves as a good trace of what is happening inside the server.  Each module has it's own logger namespace making it easy to locate the source of the log statement.
 
+For production there would be multiple log targets including info and warn/error to separate out the vital statements from simple info trace.  But, the info is important to retain when something goes wrong.
 
 ### CSV Parser
 
@@ -112,14 +114,13 @@ For this project it is probably easier to create one from scratch and just read 
 
 ## Extensions & Enhancements
 
-### Database Integration
+Given more time, here are some enhancements that I would make:
 
-### Docker Containerization
-
-### Mobile Integration
-
-### Swagger Definitions
-
+* Database Integration to redis/mongo or MySQL
+* Docker Containerization to enable scaling
+* Mobile Integration to test mobile app
+* Swagger Definitions to help fully define the API
+* Functional Tests to automate end-to-end testing of the API
 
 ## License
 
