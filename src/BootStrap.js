@@ -1,5 +1,6 @@
 /**
- * @class BootStrap
+ * @class BootStrap - factory to configure and create dependend modules.  
+ *                    this object is easily configured for test/mocks.
  *
  * @author darryl.west@raincitysoftware.com
  * @created 2017-04-01

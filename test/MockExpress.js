@@ -49,6 +49,15 @@ const MockExpress = function() {
         mock.port = port;
     };
 
+    this.createGetRequest = function(id) {
+        const obj = {
+            method:'GET',
+            params:{ id: id },
+            url: `/coffeeshop/${id}`
+        };
+        return mock.createRequest(obj);
+    };
+
     this.createRequest = function(obj) {
         if (!obj.method) {
             obj.method = 'GET';

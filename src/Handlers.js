@@ -22,14 +22,50 @@ const Handlers = function(options = {}) {
         const id = request.params.id || request.query.id;
         log.info('find shop by id: ', id);
 
-        dao.findById(id).then(item => {
-            const payload = handlers.createPayload(OK, item);
+        dao.findById(id).then(shop => {
+            const payload = handlers.createPayload(OK, shop);
             log.info('returning payload: ', payload);
-            response.send(payload);
+            return response.send(payload);
         }).catch(err => {
             log.warn( err.message );
-            response.sendStatus(404);
+            return response.sendStatus(404);
         });
+    };
+
+    /**
+     * insert a new coffee shop and return the shop's id; return error (40x) if shop could not be inserted
+     */
+    this.insertShop = function(request, response) {
+        log.info('insert a new coffee shop: ', request.query);
+    };
+
+    /**
+     * update an existing coffee shop and return the shop's id; return error (40x) if shop could not be updated
+     */
+    this.updateShop = function(request, response) {
+        const id = request.params.id || request.query.id;
+        log.info('update an existing shop: ', id);
+    };
+
+    /**
+     * find and delete the coffee shop for the given id; return error (40x) if the shop could not be deleted
+     */
+    this.deleteShop = function(request, response) {
+        const id = request.params.id || request.query.id;
+        log.info('delete shop with id: ', id);
+
+        const errorHandler = function(err) {
+            log.error('delete error: ', err.message);
+            return response.sendStatus(404);
+        };
+
+        dao.findById(id).then(shop => {
+            dao.delete(shop).then(model => {
+                const payload = handlers.createPayload(OK, {id:id});
+                log.info('return delete payload: ', payload);
+                return response.send(payload);
+            }).catch(err => errorHandler);
+        }).catch(err => errorHandler);
     };
 
     /**
@@ -59,7 +95,7 @@ const Handlers = function(options = {}) {
             status:status,
             ts:Date.now(),
             version:'1.0',
-            results:obj
+            data:obj
         };
 
         return wrapper;

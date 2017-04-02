@@ -7,23 +7,30 @@
 const should = require('chai').should();
 const MockLogger = require('simple-node-logger').mocks.MockLogger;
 const MockExpress = require('./MockExpress');
-const TestGeoData = require('./TestGeoData');
 const Handlers = require('../src/Handlers');
-const ShopDao = require('../src/ShopDao');
+const ShopModel = require('../src/ShopModel');
+const BootStrap = require('../src/BootStrap');
 
 describe('Handlers', function() {
     'use strict';
 
-    const TOTAL_ITEMS = 48;
-    const testGeoData = new TestGeoData();
+    const bootStrap = new BootStrap({
+        app:new MockExpress(),
+        log:MockLogger.createLogger('BootStrap'),
+        createLogger:MockLogger.createLogger
+    });
 
-    const dao = new ShopDao({log:MockLogger.createLogger('ShopDao')});
-    dao.initData();
+    // load the reference data
+    const dao = bootStrap.createShopDao();
+    const [ db, map ] = dao.initData();
+    const TOTAL_ITEMS = db.length;
 
     const createOptions = function() {
         const opts = {};
+
         opts.log = MockLogger.createLogger('Handlers');
         opts.dao = dao;
+        opts.coordinateLocator = bootStrap.createCoordinateLocator();
 
         return opts;
     };
@@ -32,6 +39,9 @@ describe('Handlers', function() {
         const handlers = new Handlers( createOptions() );
         const methods = [
             'findShopById',
+            'insertShop',
+            'updateShop',
+            'deleteShop',
             'findNearestShop',
             'createPayload'
         ];
@@ -67,47 +77,51 @@ describe('Handlers', function() {
     });
 
     describe('findShopById', function() {
+        const mockExpress = new MockExpress();
         const handlers = new Handlers( createOptions() );
-        const knownId = '53fbe21c456e74467b000006';
+        const knownShop = db[4];
 
-        it.skip('should find a known shop item by id', function(done) {
-            const obj = {
-                mehtod:'GET',
-                url:`/shop/v0/item/${knownId}`,
-                params:{
-                    id: knownId
-                }
-            };
-
-            const mockExpress = new MockExpress();
-            const request = mockExpress.createRequest(obj);
+        it('should find a known shop item by id', function(done) {
             const response = mockExpress.createResponse();
             response.send = function(payload) {
-                // console.log(payload);
                 should.exist( payload );
-                // for v0, payload is the item
-                const item = payload;
+                payload.status.should.equal('ok');
+                const shop = payload.data;
 
-                item.id.should.equal( knownId );
-                item.createdAt.toJSON().should.equal('2014-08-26T01:25:48.754Z');
-                item.price.should.equal(20);
-                item.userId.should.equal('53f6c9c96d1944af0b00000b');
-                item.status.should.equal('removed');
-                item.description.should.equal('');
-                item.loc.length.should.equal(2);
-                
-                let [lat, long] = item.loc;
-                lat.should.equal(36.15517247887697);
-                long.should.equal(-115.14484161837342);
+                shop.id.should.equal( knownShop.id );
+                shop.name.should.equal(knownShop.name);
+                shop.address.should.equal(knownShop.address);
+                shop.version.should.equal(0);
+                shop.status.should.equal(ShopModel.ACTIVE);
                 
                 done();
             };
 
-            // handlers.findItemById(request, response);
-            done();
+            handlers.findShopById(mockExpress.createGetRequest(knownShop.id), response);
         });
 
         it('should return an error if item not found');
+    });
+
+    describe('insert/update/delete', function() {
+        const handlers = new Handlers( createOptions() );
+
+        it('should insert a new coffee shop and return the new id');
+
+        it('should reject a bad insert request');
+
+        it('should update an existing coffee shop and return the id');
+
+        it('should reject a bad update request');
+
+        it('should delete an existing coffee shop and return the id', function(done) {
+            const shop = db[23];
+            // console.log(shop);
+
+            done();
+        });
+
+        it('should reject a bad delete request');
     });
 
     describe('createPayload', function() {
@@ -121,7 +135,7 @@ describe('Handlers', function() {
             payload.status.should.equal('ok');
             payload.ts.should.be.above(Date.now() - 10);
             payload.version.should.equal('1.0');
-            payload.results.should.equal(model);
+            payload.data.should.equal(model);
         });
     });
 });
