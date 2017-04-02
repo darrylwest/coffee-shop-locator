@@ -16,6 +16,8 @@ const Handlers = function(options = {}) {
     const handlers = this;
     const log = options.log;
     const dao = options.dao;
+    const coordinateLocator = options.coordinateLocator;
+    console.log(coordinateLocator);
 
     /**
      * locate the coffee shop with it's id
@@ -121,14 +123,21 @@ const Handlers = function(options = {}) {
      * find a list of shops ordered by the closest
      */
     this.findNearestShop = function(request, response) {
-        const lat = request.params.lat || request.query.lat;
-        const long = request.params.long || request.query.long;
-        const loc = [ lat, long ];
-        log.info(`query by gio ${lat}/${long}`);
+        const address = request.params.address || request.query.address;
+        log.info(`find nearest coffee shop to address: ${address}`);
+
+        const errorHandler = function(err) {
+            log.error('delete error: ', err.message);
+            return response.sendStatus(404);
+        };
+
+        // dummies...
+        const lat = 0.0;
+        const lng = 0.0;
         
-        dao.queryByGeo(loc).then(list => {
-            const payload = handlers.createPayload(list);
-            log.info(`return rows, count: ${list.length} for geo ${lat}/${long}`);
+        dao.queryNearest(lat, lng).then(result => {
+            const payload = handlers.createPayload(OK, result);
+
             response.send(payload);
         }).catch(err => {
             log.error(err);
@@ -157,6 +166,9 @@ const Handlers = function(options = {}) {
         }
         if (!dao) {
             throw new Error('handlers must be constructed with a shop dao object');
+        }
+        if (!coordinateLocator) {
+            throw new Error('handlers must be constructed with a coordinate locator');
         }
     }());
 };

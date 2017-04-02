@@ -8,19 +8,26 @@ const should = require('chai').should();
 const MockLogger = require('simple-node-logger').mocks.MockLogger;
 const MockExpress = require('./MockExpress');
 const Routers = require('../src/Routers');
-const Handlers = require('../src/Handlers');
-const ShopDao = require('../src/ShopDao');
+const ShopModel = require('../src/ShopModel');
+const BootStrap = require('../src/BootStrap');
 
 describe('Routers', function() {
     'use strict';
 
-    const dao = new ShopDao({log:MockLogger.createLogger('ShopDao')});
-    const handlers = new Handlers({log:MockLogger.createLogger('Handlers'), dao:dao});
+    const bootStrap = new BootStrap({
+        app:new MockExpress(),
+        log:MockLogger.createLogger('BootStra'),
+        createLogger:MockLogger.createLogger
+    });
+
+    // load the ref data
+    const dao = bootStrap.createShopDao();
+    const [ db, map ] = dao.initData();
 
     const createOptions = function() {
         const opts = {};
         opts.log = MockLogger.createLogger('Routers');
-        opts.handlers = handlers;
+        opts.handlers = bootStrap.createHandlers();
 
         return opts;
     };

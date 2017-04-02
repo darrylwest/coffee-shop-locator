@@ -298,6 +298,23 @@ describe('ShopDao', function() {
             });
         });
 
+        it('should find the nearest to 252 Guerrero St, San Francisco, CA 94103, USA', function(done) {
+            const lat = 37.7671252;
+            const lng = -122.4245135;
+
+            dao.findNearest(lat, lng).then(shop => {
+                should.exist(shop);
+
+                shop.id.should.equal(28);
+                shop.name.should.equal('Four Barrel Coffee');
+
+                done();
+            }).catch(err => {
+                console.log(err);
+                should.not.exist(err);
+            });
+        });
+
         it('should find the nearest to 2101 Sutter St', function(done) {
             const lat = 37.785727;
             const lng = -122.4350462;

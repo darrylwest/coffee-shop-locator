@@ -23,7 +23,6 @@ describe('Handlers', function() {
     // load the reference data
     const dao = bootStrap.createShopDao();
     const [ db, map ] = dao.initData();
-    const TOTAL_ITEMS = db.length;
 
     const createOptions = function() {
         const opts = {};
