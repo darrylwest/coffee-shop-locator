@@ -59,7 +59,7 @@ describe('Routers', function() {
 
             routers.assignRoutes(app);
 
-            app.routes.length.should.be.equal( 2 );
+            app.routes.length.should.be.equal( 7 );
             app.routes.forEach(route => {
                 // console.log(route);
                 route.fn.should.be.a('function');

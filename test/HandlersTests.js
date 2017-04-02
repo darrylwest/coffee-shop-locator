@@ -42,6 +42,7 @@ describe('Handlers', function() {
             'updateShop',
             'deleteShop',
             'findNearestShop',
+            'getStatus',
             'createPayload'
         ];
 

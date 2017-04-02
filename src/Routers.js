@@ -6,6 +6,8 @@
  */
 'use strict';
 
+const bodyParser = require('body-parser');
+
 const Routers = function(options = {}) {
 
     const routers = this;
@@ -17,14 +19,23 @@ const Routers = function(options = {}) {
     this.assignRoutes = function(app) {
         log.info('assign the routes to app...');
 
+        app.use(bodyParser.json());
+
         log.info('define the top level route /');
         app.get('/', (req, res) => {
             // TODO : replace with a default page 
             res.send(`<html><head><title>shop locator</title></head><body><h3>${config.name} | Version ${config.version}</h3><hr/><h4>${config.description}</h4></body></html>\n`);
         });
 
+        app.get(`${route}/status`, handlers.getStatus);
+
         app.get(`${route}/:id`, handlers.findShopById);
-        // app.del(`${route}/:id`, handlers.deleteShopById);
+        app.post(`${route}`, handlers.insertShop);
+        app.put(`${route}/:id`, handlers.updateShop);
+        app.del(`${route}/:id`, handlers.deleteShop);
+
+        app.get(`{route}/nearest`, handlers.findNearestShop);
+
     };
 
     // construction validation

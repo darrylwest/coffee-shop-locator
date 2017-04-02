@@ -145,6 +145,15 @@ const Handlers = function(options = {}) {
         }).catch(errorHandler);
     };
 
+    this.getStatus = function(request, response) {
+        const status = {
+            dbsize: dao.getCount()
+        };
+
+        const payload = handlers.createPayload(OK, status);
+        return response.send(payload);
+    };
+
     /**
      * create a wrapper with status, timestamp, response version and the results
      */
