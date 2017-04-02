@@ -17,7 +17,6 @@ const Handlers = function(options = {}) {
     const log = options.log;
     const dao = options.dao;
     const coordinateLocator = options.coordinateLocator;
-    console.log(coordinateLocator);
 
     /**
      * locate the coffee shop with it's id
@@ -127,22 +126,23 @@ const Handlers = function(options = {}) {
         log.info(`find nearest coffee shop to address: ${address}`);
 
         const errorHandler = function(err) {
-            log.error('delete error: ', err.message);
+            log.error('find nearest shop error: ', err.message);
             return response.sendStatus(404);
         };
 
-        // dummies...
-        const lat = 0.0;
-        const lng = 0.0;
-        
-        dao.queryNearest(lat, lng).then(result => {
-            const payload = handlers.createPayload(OK, result);
+        coordinateLocator.findCoordinates(address).then(coords => {
+            const lat = coords.location.lat;
+            const lng = coords.location.lng;
 
-            response.send(payload);
-        }).catch(err => {
-            log.error(err);
-            response.sendStatus(500);
-        });
+            log.info(`found coords for ${address} ${lat}, ${lng}`);
+            log.info('clean address: ', coords.address);
+
+            dao.findNearest(lat, lng).then(result => {
+                const payload = handlers.createPayload(OK, result);
+
+                response.send(payload);
+            }).catch(errorHandler);
+        }).catch(errorHandler);
     };
 
     /**

@@ -62,17 +62,28 @@ describe('Handlers', function() {
     describe('findNearestShop', function() {
         const handlers = new Handlers( createOptions() );
         const mockExpress = new MockExpress();
-        const requestObject = {
-            method:'GET',
-            url:'/shop/v0/items/geo/',
-            params:{
-                lat:36.4433,
-                long:-111.4432
-            }
-        };
 
-        it('should return items within a specified geo location');
-        it('should return zero rows if geo location is out of range');
+        it('should return the nearest shop to 535 Mission as a known shop', function(done) {
+            const response = mockExpress.createResponse();
+            response.send = function(payload) {
+                should.exist( payload );
+                payload.status.should.equal('ok');
+                const shop = payload.data;
+
+                shop.id.should.equal(16);
+                done();
+            };
+
+            const address = '535 Mission St., San Francisco, CA';
+            const opts = {
+                method:'GET',
+                url: `/coffeeshop/nearest?address=${escape(address)}`,
+                params: { address:address }
+            };
+
+            const request = mockExpress.createRequest(opts);
+            handlers.findNearestShop(request, response);
+        });
     });
 
     describe('findShopById', function() {

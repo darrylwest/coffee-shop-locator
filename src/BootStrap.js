@@ -71,7 +71,7 @@ const BootStrap = function(options = {}) {
                 log:createLogger('CoordinateLocator')
             };
 
-            coordinateLocator = new CoordinateLocator(log);
+            coordinateLocator = new CoordinateLocator(opts);
         }
 
         return coordinateLocator;
