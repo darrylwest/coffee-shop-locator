@@ -60,6 +60,15 @@ describe('ShopLocatorService', function() {
             });
 
             it('should return an error for a non-know shop id');
+
+            it('should return the new id when a new shop is inserted');
+            it('should reject an insert request when shop is not valid');
+
+            it('should update an existing shop');
+            it('should reject an update request when shop is not valid');
+
+            it('should delete an existing shop');
+            it('should reject a delete request for a non-known shop');
         });
     }); 
 
