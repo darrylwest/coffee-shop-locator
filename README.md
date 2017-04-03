@@ -120,10 +120,9 @@ For this project it is probably easier to create one from scratch and just read 
 Given more time, here are some enhancements that I would make:
 
 * Database Integration to redis/mongo or MySQL
-* Docker Containerization to enable scaling
+* Docker Containerization to enable scaling and make function and integration tests more robust
 * Mobile Integration to test mobile app
 * Swagger Definitions to help fully define the API
-* Functional Tests to automate end-to-end testing of the API
 
 ## License
 

@@ -1,4 +1,5 @@
 TESTFILES=test/*.js
+FUNCTIONAL_FILES=test/functional/*.js
 JSFILES=src/*.js app.js
 JSHINT=node_modules/.bin/jshint
 MOCHA=node_modules/.bin/mocha
@@ -21,6 +22,9 @@ run:
 
 start:
 	@( export NODE_DEV=production && nohup node app.js & )
+
+func:
+	@( $(MOCHA) $(FUNCTIONAL_FILES) )
 
 integration:
 	@( ./test/integration/findShopById.sh )
