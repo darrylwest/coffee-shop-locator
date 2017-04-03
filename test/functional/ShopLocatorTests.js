@@ -72,10 +72,50 @@ describe('ShopLocatorService', function() {
         });
     }); 
 
-    describe('locator', function() {
-        const route = '/locator';
+    describe('locate/nearest', function() {
+        const route = '/locate/nearest';
+        const createOptions = function(address) {
+            const opts = {
+                method: 'GET',
+                hostname: 'localhost',
+                port: port,
+                path: `${route}?address=${escape(address)}`
+            };
 
-        it('should find a known coffee shop from the known address');
+            return opts;
+        };
+
+        it('should find a known coffee shop from the known address 535 Mission', function(done) {
+            const chunks = [];
+            const address = '535 Mission St., San Francisco, CA';
+            const opts = createOptions(address);
+
+            const req = http.request(opts, (res) => {
+                res.on('data', data => {
+                    chunks.push(data);
+                });
+            });
+
+            req.on('error', err => {
+                console.log(err);
+                should.not.exist(err);
+            });
+
+            req.on('close', () => {
+                const message = chunks.join('');
+                const obj = JSON.parse(message);
+
+                obj.status.should.equal('ok');
+                const shop = obj.data;
+                // console.log(shop);
+                shop.id.should.equal(16);
+
+                done();
+            });
+
+            req.end();
+
+        });
     });
 });
 
