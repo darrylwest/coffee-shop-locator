@@ -33,6 +33,7 @@ npm install
 make test
 make start
 make status
+make functional
 make integration
 ```
 

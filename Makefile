@@ -24,6 +24,9 @@ start:
 	@( export NODE_DEV=production && nohup node app.js & )
 
 func:
+	@( make functional )
+
+functional:
 	@( $(MOCHA) $(FUNCTIONAL_FILES) )
 
 integration:
