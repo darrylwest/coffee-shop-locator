@@ -7,7 +7,7 @@
 'use strict';
 
 const CoordinateLocator = function(options = {}) {
-    const locator = this;
+    // const locator = this;
     const log = options.log;
     const https = options.https || require('https');
     const cache = options.cache || new Map();

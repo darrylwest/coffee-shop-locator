@@ -90,7 +90,8 @@ describe('Handlers', function() {
     describe('findShopById', function() {
         const mockExpress = new MockExpress();
         const handlers = new Handlers( createOptions() );
-        const knownShop = db[4];
+        const knownShop = map.get(5);
+        console.log(knownShop);
 
         it('should find a known shop item by id', function(done) {
             const response = mockExpress.createResponse();

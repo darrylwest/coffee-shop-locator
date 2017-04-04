@@ -7,7 +7,7 @@
 const should = require('chai').should();
 const MockLogger = require('simple-node-logger').mocks.MockLogger;
 const Middleware = require('../src/Middleware');
-const ShopDao = require('../src/ShopDao');
+// const ShopDao = require('../src/ShopDao');
 
 describe('Middleware', function() {
     'use strict';

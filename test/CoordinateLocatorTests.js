@@ -6,7 +6,6 @@
  */
 
 const should = require('chai').should();
-const https = require('https');
 const MockLogger = require('simple-node-logger').mocks.MockLogger;
 const CoordinateLocator = require('../src/CoordinateLocator');
 

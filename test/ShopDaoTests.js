@@ -5,7 +5,6 @@
  * @created 2017-04-01
  */
 const should = require('chai').should();
-const geolib = require('geolib');
 const MockLogger = require('simple-node-logger').mocks.MockLogger;
 const ShopDao = require('../src/ShopDao');
 const ShopModel = require('../src/ShopModel');

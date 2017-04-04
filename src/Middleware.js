@@ -7,7 +7,7 @@
 
 'use strict';
 const Middleware = function(options = {}) {
-    const middleware = this;
+    // const middleware = this;
     const log = options.log;
 
     const apikey = options.apikey;

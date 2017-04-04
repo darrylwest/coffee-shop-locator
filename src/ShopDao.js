@@ -139,6 +139,7 @@ const ShopDao = function(options = {}) {
         let count = 0;
         idmap.forEach((value, key) => {
             if (value.status === ShopModel.ACTIVE) {
+                log.debug(key);
                 count++;
             }
         });
@@ -161,7 +162,7 @@ const ShopDao = function(options = {}) {
         return new Promise((resolve, reject) => {
             idmap.forEach((shop, key) => {
                 if (shop.status !== ShopModel.ACTIVE) {
-                    log.debug('skip ', shop.id);
+                    log.debug('skip ', shop.id, key);
                     return;
                 }
 
@@ -218,7 +219,6 @@ const ShopDao = function(options = {}) {
             throw new Error(`cannot locate database file ${file}`);
         }
 
-        let maxid = 0;
         const lines = buf.toString().split('\n');
         shops = lines.map(line => {
             const columns = line.split(',');

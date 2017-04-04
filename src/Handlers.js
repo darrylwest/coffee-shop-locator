@@ -8,7 +8,6 @@
 
 // payload wrapper constants
 const OK = 'ok';
-const FAILED = 'failed';
 
 const ShopModel = require('./ShopModel');
 
@@ -115,7 +114,7 @@ const Handlers = function(options = {}) {
         dao.findById(id).then(shop => {
             dao.delete(shop).then(model => {
                 // per spec, just return the id, not the entire model...
-                const payload = handlers.createPayload(OK, {id:id});
+                const payload = handlers.createPayload(OK, {id:model.id});
                 log.info('return delete payload: ', payload);
                 return response.send(payload);
             }).catch(errorHandler);

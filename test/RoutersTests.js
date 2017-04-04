@@ -8,7 +8,6 @@ const should = require('chai').should();
 const MockLogger = require('simple-node-logger').mocks.MockLogger;
 const MockExpress = require('./MockExpress');
 const Routers = require('../src/Routers');
-const ShopModel = require('../src/ShopModel');
 const BootStrap = require('../src/BootStrap');
 
 describe('Routers', function() {
@@ -22,7 +21,7 @@ describe('Routers', function() {
 
     // load the ref data
     const dao = bootStrap.createShopDao();
-    const [ db, map ] = dao.initData();
+    dao.initData();
 
     const createOptions = function() {
         const opts = {};

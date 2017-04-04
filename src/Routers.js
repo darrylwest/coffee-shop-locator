@@ -9,8 +9,7 @@
 const bodyParser = require('body-parser');
 
 const Routers = function(options = {}) {
-
-    const routers = this;
+    // const routers = this;
     const log = options.log;
     const handlers = options.handlers;
     const config = options.config || require('../package.json');
