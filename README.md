@@ -65,9 +65,13 @@ This application was developed in osx and tested inside AWS on EC2 running cento
 
 There are unit tests for each public function in the application.  There are also "compiler" tests that compensate for javascript not compiling until run time.  The "compiler" tests guard against typos that would not be caught even at runtime until a method is actually invoked.
 
+### Functional
+
+Functional tests written in mocha are run with `make functional` or `make func`.  The service must be running on port 3002 prior to running.  It's a good idea to tail the current log file while running tests.
+
 ### Integration
 
-There are good news and bad news test/exercises for each endpoint.
+There are good news and bad news test/exercises for each endpoint.  Integration tests, implemented as shell scripts, may be invoked individually or with the make target `make integration`.
 
 ## Implementation
 
@@ -129,4 +133,4 @@ Given more time, here are some enhancements that I would make:
 
 Apache 2.0
 
-###### darryl.west | Version 2017-04-02
+###### darryl.west | Version 2017-04-05
