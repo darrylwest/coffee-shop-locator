@@ -24,7 +24,7 @@ describe('ShopLocatorService', function() {
 
     describe('coffeeshop', function() {
 
-        describe.only('findById', function() {
+        describe('findById', function() {
             const client = new ShopClient(createOptions());
 
             it('should find a known shop by id', function(done) {
@@ -33,8 +33,6 @@ describe('ShopLocatorService', function() {
                 client.findById(id, (err, resp) => {
                     should.not.exist(err);
                     should.exist(resp);
-
-                    console.log(resp);
 
                     resp.status.should.equal('ok');
                     resp.ts.should.be.above(now);
@@ -66,7 +64,7 @@ describe('ShopLocatorService', function() {
                 return opts;
             };
 
-            it('should insert the new model and return id then return the full model on subsequent find', function(done) {
+            it.skip('should insert the new model and return id then return the full model on subsequent find', function(done) {
                 // insert a new shop
                 const model = {
                     name:'New Age Coffee',
@@ -117,7 +115,7 @@ describe('ShopLocatorService', function() {
             const opts = {
                 method: 'GET',
                 hostname: 'localhost',
-                port: port,
+                port: 3002,
                 path: `${route}?address=${escape(address)}`
             };
 
