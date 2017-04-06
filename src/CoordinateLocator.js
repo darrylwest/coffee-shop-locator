@@ -51,7 +51,7 @@ const CoordinateLocator = function(options = {}) {
                     const result = {};
                     const first = obj.results.pop();
 
-                    /* jshint -W106 */
+                    /* jshint -W106 */ // underscores
                     result.address = first.formatted_address;
                     /* jshint +W106 */
 
