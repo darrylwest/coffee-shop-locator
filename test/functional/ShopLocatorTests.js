@@ -8,61 +8,50 @@
 const should = require('chai').should();
 const http = require('http');
 const MockLogger = require('simple-node-logger').mocks.MockLogger;
+const ShopClient = require('./ShopClient');
 
 describe('ShopLocatorService', function() {
     'use strict';
 
-    const port = 3002;
+    const createOptions = function() {
+        const opts = {};
+        opts.log = MockLogger.createLogger('ShopClient');
+        opts.hostname = 'localhost';
+        opts.port = 3002;
+
+        return opts;
+    };
 
     describe('coffeeshop', function() {
-        const route = '/coffeeshop';
 
-        describe('findById', function() {
-            const createOptions = function(id) {
-                const opts = {
-                    method: 'GET',
-                    hostname: 'localhost',
-                    port: port,
-                    path: `${route}/${id}`
-                };
-
-                return opts;
-            };
+        describe.only('findById', function() {
+            const client = new ShopClient(createOptions());
 
             it('should find a known shop by id', function(done) {
-                const chunks = [];
                 const id = 20;
-                const opts = createOptions(id);
-                const req = http.request(opts, (res) => {
-                    res.on('data', data => {
-                        chunks.push(data);
-                    });
-                });
-
-                req.on('error', err => {
-                    console.log(err);
+                const now = Date.now() - 1;
+                client.findById(id, (err, resp) => {
                     should.not.exist(err);
-                });
+                    should.exist(resp);
 
-                req.on('close', () => {
-                    const message = chunks.join('');
-                    const obj = JSON.parse(message);
+                    console.log(resp);
 
-                    obj.status.should.equal('ok');
-                    const shop = obj.data;
+                    resp.status.should.equal('ok');
+                    resp.ts.should.be.above(now);
+                    resp.version.should.equal('1.0');
+                    resp.data.should.be.a('object');
+
+                    const shop = resp.data;
                     shop.id.should.equal(id);
-                    shop.name.should.equal('Mazarine Coffee');
 
                     done();
                 });
-
-                req.end();
             });
 
             it('should return an error for a non-know shop id');
         });
 
-        describe.only('insert/update', function() {
+        describe('insert/update', function() {
             const createOptions = function(method) {
                 const opts = {
                     hostname: 'localhost',

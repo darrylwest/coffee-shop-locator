@@ -15,7 +15,7 @@ const run = function() {
     process.stdout.write( clearScreen ); 
     console.log('Changed files: ', files);
 
-    let runner = spawn( 'make', [ 'test' ] );
+    let runner = spawn( 'make', [ 'func' ] );
 
     runner.stdout.on('data', function( data ) {
         process.stdout.write( data );
@@ -45,5 +45,5 @@ const changeHandler = function(event, filename) {
 
 run();
 fs.watch( './src', { recursive:false }, changeHandler );
-fs.watch( './test', { recursive:false }, changeHandler );
+fs.watch( './test', { recursive:true }, changeHandler );
 
