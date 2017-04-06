@@ -60,8 +60,58 @@ describe('ShopLocatorService', function() {
             });
 
             it('should return an error for a non-know shop id');
+        });
 
-            it('should return the new id when a new shop is inserted');
+        describe.only('insert/update', function() {
+            const createOptions = function(method) {
+                const opts = {
+                    hostname: 'localhost',
+                    port: port,
+                    path: '/coffeeshop',
+                    method: method.toUpperCase(), // post = insert, put = update
+                    headers: {
+                        'Content-Type':'application/json'
+                    }
+                };
+
+                return opts;
+            };
+
+            it('should insert the new model and return id then return the full model on subsequent find', function(done) {
+                // insert a new shop
+                const model = {
+                    name:'New Age Coffee',
+                    address: '4545 State Street, Anywhere, CA',
+                    lat: 10.2,
+                    lng: 43.3
+                };
+                const opts = createOptions('post');
+
+                const chunks = [];
+
+                const req = new http.ClientRequest(opts);
+                req.end(JSON.stringify(model));
+
+                req.on('error', err => {
+                    console.log(err);
+                    should.not.exist(err);
+                });
+
+                req.on('response', resp => {
+                    resp.on('data', chunk => {
+                        chunks.push(chunk);
+                    });
+                });
+
+                req.on('close', () => {
+                    const message = chunks.join();
+                    console.log(message);
+                    done();
+                });
+
+                // try to read back to verify model
+            });
+
             it('should reject an insert request when shop is not valid');
 
             it('should update an existing shop');
