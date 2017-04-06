@@ -14,15 +14,32 @@ const ShopClient = function(options = {}) {
     const hostname = options.hostname;
     const port = options.port;
 
-    // return through a callback
-    this.findById = function(id, callback) {
+    const createOptions = function(method, body) {
         const opts = {
-            method: 'GET',
+            method: method.toUpperCase(),
             hostname: hostname,
             port: port,
-            path: `/coffeeshop/${id}`
+            path: '/coffeeshop',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         };
 
+        if (body) {
+            opts.headers[ 'Content-Length' ] = Buffer.byteLength(body);
+        }
+
+        return opts
+    };
+
+    // return through a callback
+    this.findById = function(id, callback) {
+        const opts = createOptions('get');
+        opts.path = `/coffeeshop/${id}`;
+
+        let message;
+        let statusCode;
+        let statusMessage;
         const chunks = [];
         const req = http.request(opts, resp => {
             resp.on('data', data => {
@@ -35,24 +52,52 @@ const ShopClient = function(options = {}) {
             return callback(err);
         });
 
+        req.on('response', resp => {
+            // console.log(resp.headers);
+            // console.log(resp.statusCode, resp.statusMessage);
+            statusCode = resp.statusCode;
+            statusMessage = resp.statusMessage;
+        });
+
         req.on('close', () => {
             const message = chunks.join('');
-            const obj = JSON.parse(message);
-            return callback(null, obj);
+            if (statusCode === 200) {
+                return callback(null, JSON.parse(message));
+            } else {
+                return callback(new Error(statusMessage));
+            }
         });
 
         req.end();
     };
 
-    // return a promise
-    this.insert = function(shop) {
+    this.insert = function(model, callback) {
+        const opts = createOptions('post');
+        const chunks = [];
+        const req = new http.ClientRequest(opts);
+
+        req.once('error', err => {
+            log.error(err);
+            callback(err);
+        });
+
+        req.on('response', resp => {
+            resp.on('data', chunk => {
+                chunks.push(chunk);
+            });
+        });
+
+        req.on('close', () => {
+            const message = chunks.join();
+            callback(null, JSON.parse(message));
+        });
+
+        req.end(JSON.stringify(model));
     };
 
-    // return a promise
     this.update = function(shop) {
     };
 
-    // return a promise
     this.delete = function(shop) {
     };
 };

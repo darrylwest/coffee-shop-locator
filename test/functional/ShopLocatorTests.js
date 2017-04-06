@@ -23,10 +23,9 @@ describe('ShopLocatorService', function() {
     };
 
     describe('coffeeshop', function() {
+        const client = new ShopClient(createOptions());
 
-        describe('findById', function() {
-            const client = new ShopClient(createOptions());
-
+        describe.only('findById', function() {
             it('should find a known shop by id', function(done) {
                 const id = 20;
                 const now = Date.now() - 1;
@@ -46,24 +45,21 @@ describe('ShopLocatorService', function() {
                 });
             });
 
-            it('should return an error for a non-know shop id');
+            it('should return an error for a non-know shop id', function(done) {
+                const id = 200000;
+                const now = Date.now() - 1;
+                client.findById(id, (err, resp) => {
+                    should.exist(err);
+                    should.not.exist(resp);
+
+                    err.message.should.equal('Not Found');
+
+                    done();
+                });
+            });
         });
 
         describe('insert/update', function() {
-            const createOptions = function(method) {
-                const opts = {
-                    hostname: 'localhost',
-                    port: port,
-                    path: '/coffeeshop',
-                    method: method.toUpperCase(), // post = insert, put = update
-                    headers: {
-                        'Content-Type':'application/json'
-                    }
-                };
-
-                return opts;
-            };
-
             it.skip('should insert the new model and return id then return the full model on subsequent find', function(done) {
                 // insert a new shop
                 const model = {
@@ -72,31 +68,40 @@ describe('ShopLocatorService', function() {
                     lat: 10.2,
                     lng: 43.3
                 };
-                const opts = createOptions('post');
 
-                const chunks = [];
-
-                const req = new http.ClientRequest(opts);
-                req.end(JSON.stringify(model));
-
-                req.on('error', err => {
+                const findCallback = function(err, resp) {
                     console.log(err);
+                    console.log(resp);
+
                     should.not.exist(err);
-                });
+                    should.exist(resp);
 
-                req.on('response', resp => {
-                    resp.on('data', chunk => {
-                        chunks.push(chunk);
-                    });
-                });
-
-                req.on('close', () => {
-                    const message = chunks.join();
-                    console.log(message);
                     done();
-                });
+                };
 
-                // try to read back to verify model
+                const now = Date.now() - 1;
+                const insertCallback = function(err, resp) {
+                    should.not.exist(err);
+                    should.exist(resp);
+
+                    resp.status.should.equal('ok');
+                    resp.ts.should.be.above(now);
+                    resp.version.should.equal('1.0');
+                    resp.data.should.be.a('object');
+
+                    const shop = resp.data;
+                    shop.id.should.above(50);
+                    shop.name.should.equal(model.name);
+                    shop.address.should.equal(model.address);
+                    shop.lat.should.equal(model.lat);
+                    shop.lng.should.equal(model.lng);
+                    shop.status.should.equal('active');
+
+                    client.findById(shop.id, findCallback);
+                };
+
+                client.insert(model, insertCallback);
+
             });
 
             it('should reject an insert request when shop is not valid');
