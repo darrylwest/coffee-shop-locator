@@ -15,7 +15,7 @@ const run = function() {
     process.stdout.write( clearScreen ); 
     console.log('Changed files: ', files);
 
-    let runner = spawn( 'make', [ 'func' ] );
+    let runner = spawn( 'make', [ 'test' ] );
 
     runner.stdout.on('data', function( data ) {
         process.stdout.write( data );

@@ -189,7 +189,7 @@ describe('ShopDao', function() {
             shop.version.should.equal(11);
         });
 
-        it('should insert a new model', function(done) {
+        it('should insert a new model and read it back', function(done) {
             const shop = new ShopModel(coffeeShops[1]);
             const count = dao.getCount();
 
@@ -210,10 +210,35 @@ describe('ShopDao', function() {
                 // yes, it was inserted
                 dao.getCount().should.equal(count + 1);
 
-                done();
+                // now read it back
+                dao.findById(model.id).then(m => {
+                    m.id.should.equal(model.id);
+                    done();
+                });
             }).catch(err => {
                 should.not.exist(err);
             });
+        });
+
+        it('should insert multiple models and verify an increase in count', function(done) {
+            const s1 = new ShopModel(coffeeShops[1]);
+            const count = dao.getCount();
+
+            dao.update(s1).then(m1 => {
+                dao.getCount().should.equal(count + 1);
+                m1.id.should.be.above(0);
+
+                const s2 = new ShopModel(coffeeShops[1]);
+                dao.update(s2).then(m2 => {
+                    dao.getCount().should.equal(count + 2);
+                    m2.id.should.be.above(m1.id);
+
+                    done();
+                });
+            }).catch(err => {
+                should.not.exist(err);
+            });
+
         });
 
         it('should update an existing model', function(done) {

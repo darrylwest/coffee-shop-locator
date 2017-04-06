@@ -53,8 +53,6 @@ const ShopClient = function(options = {}) {
         });
 
         req.on('response', resp => {
-            // console.log(resp.headers);
-            // console.log(resp.statusCode, resp.statusMessage);
             statusCode = resp.statusCode;
             statusMessage = resp.statusMessage;
         });

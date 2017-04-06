@@ -25,7 +25,7 @@ describe('ShopLocatorService', function() {
     describe('coffeeshop', function() {
         const client = new ShopClient(createOptions());
 
-        describe.only('findById', function() {
+        describe('findById', function() {
             it('should find a known shop by id', function(done) {
                 const id = 20;
                 const now = Date.now() - 1;
@@ -60,7 +60,7 @@ describe('ShopLocatorService', function() {
         });
 
         describe('insert/update', function() {
-            it.skip('should insert the new model and return id then return the full model on subsequent find', function(done) {
+            it('should insert the new model and return id then return the full model on subsequent find', function(done) {
                 // insert a new shop
                 const model = {
                     name:'New Age Coffee',
@@ -70,8 +70,8 @@ describe('ShopLocatorService', function() {
                 };
 
                 const findCallback = function(err, resp) {
-                    console.log(err);
-                    console.log(resp);
+                    // console.log(err);
+                    // console.log(resp);
 
                     should.not.exist(err);
                     should.exist(resp);

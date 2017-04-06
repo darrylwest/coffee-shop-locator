@@ -80,7 +80,8 @@ const ShopDao = function(options = {}) {
             const shop = dao.prepareForUpdate(model);
             log.info('update the shop: ', shop);
 
-            idmap.set(model.id, shop);
+            idmap.set(shop.id, shop);
+
             return resolve(shop);
         });
     };
